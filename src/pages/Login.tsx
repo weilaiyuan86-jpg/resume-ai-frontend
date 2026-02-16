@@ -11,7 +11,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 
-const API_BASE_URL = import.meta.env.VITE_BACKEND_URL || 'http://82.29.197.201:3000';
+const API_BASE_URL = import.meta.env.VITE_BACKEND_URL || '/api';
 
 type UserRole = 'super_admin' | 'admin' | 'viewer' | 'user';
 
