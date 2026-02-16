@@ -26,7 +26,7 @@ import gsap from 'gsap';
 import { Switch } from '@/components/ui/switch';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
-const API_BASE_URL = import.meta.env.VITE_BACKEND_URL || '/api';
+const API_BASE_URL = '/api';
 
 interface Experience {
   id: string;
