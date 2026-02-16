@@ -72,7 +72,7 @@ export default function About() {
               <Sparkles className="w-4 h-4" />
               <span>关于我们</span>
             </div>
-            <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
+            <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-6">
               为全球求职者打造的
               <br />
               <span className="text-blue-600">精英简历平台</span>
@@ -87,7 +87,7 @@ export default function About() {
         {/* Stats Section */}
         <div className="py-16">
           <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-foreground">
               {stats.map((stat, index) => (
                 <div key={index} className="text-center">
                   <p className="text-4xl md:text-5xl font-bold text-blue-600 mb-2">
@@ -103,7 +103,7 @@ export default function About() {
         {/* Mission Section */}
         <div className="py-16 bg-gray-50">
           <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <h2 className="text-3xl font-bold text-gray-900 mb-6">我们的使命</h2>
+            <h2 className="text-3xl font-bold text-foreground mb-6">我们的使命</h2>
             <p className="text-lg text-gray-600 leading-relaxed">
               在 EvalShare，我们相信每个人都值得拥有一份能够展现自己价值的简历。
               我们的使命是通过先进的 AI 技术，帮助求职者突破语言和文化的障碍，
@@ -116,7 +116,7 @@ export default function About() {
         {/* Values Section */}
         <div className="py-16">
           <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-            <h2 className="text-3xl font-bold text-gray-900 text-center mb-12">
+            <h2 className="text-3xl font-bold text-foreground text-center mb-12">
               我们的价值观
             </h2>
             <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
@@ -128,7 +128,7 @@ export default function About() {
                   <div className="w-12 h-12 rounded-xl bg-blue-100 flex items-center justify-center mb-4">
                     <value.icon className="w-6 h-6 text-blue-600" />
                   </div>
-                  <h3 className="font-semibold text-gray-900 mb-2">{value.title}</h3>
+                  <h3 className="font-semibold text-foreground mb-2">{value.title}</h3>
                   <p className="text-sm text-gray-600">{value.description}</p>
                 </div>
               ))}
@@ -139,7 +139,7 @@ export default function About() {
         {/* Team Section */}
         <div className="py-16 bg-gray-50">
           <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-            <h2 className="text-3xl font-bold text-gray-900 text-center mb-12">
+            <h2 className="text-3xl font-bold text-foreground text-center mb-12">
               核心团队
             </h2>
             <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
@@ -151,7 +151,7 @@ export default function About() {
                   <div className="w-20 h-20 mx-auto mb-4 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white text-xl font-bold">
                     {member.avatar}
                   </div>
-                  <h3 className="font-semibold text-gray-900">{member.name}</h3>
+                  <h3 className="font-semibold text-foreground">{member.name}</h3>
                   <p className="text-blue-600 text-sm mb-2">{member.role}</p>
                   <p className="text-sm text-gray-500">{member.bio}</p>
                 </div>
@@ -163,7 +163,7 @@ export default function About() {
         {/* CTA Section */}
         <div className="py-16">
           <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">
+            <h2 className="text-3xl font-bold text-foreground mb-4">
               准备好开始您的求职之旅了吗？
             </h2>
             <p className="text-gray-600 mb-8">

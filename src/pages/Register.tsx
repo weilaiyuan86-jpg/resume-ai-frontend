@@ -82,18 +82,18 @@ export default function Register() {
   };
 
   return (
-    <div className="min-h-screen bg-brand-gray-3/50">
+    <div className="min-h-screen bg-background">
       <Navbar />
       <main className="pt-24 pb-16">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             {/* Left Side - Form */}
-            <div className="bg-white rounded-2xl shadow-card p-8 lg:p-12">
+            <div className="bg-card rounded-2xl shadow-card p-8 lg:p-12">
               <div className="text-center mb-8">
                 <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-brand-orange/10 mb-4">
                   <Sparkles className="w-8 h-8 text-brand-orange" />
                 </div>
-                <h1 className="text-2xl font-bold text-brand-black mb-2">
+                <h1 className="text-2xl font-bold text-foreground mb-2">
                   创建免费账户
                 </h1>
                 <p className="text-brand-gray-2">
@@ -229,7 +229,7 @@ export default function Register() {
 
             {/* Right Side - Benefits */}
             <div className="hidden lg:block">
-              <h2 className="text-3xl font-bold text-brand-black mb-6">
+              <h2 className="text-3xl font-bold text-foreground mb-6">
                 免费开始，无需信用卡
               </h2>
               <div className="space-y-6">
@@ -256,7 +256,7 @@ export default function Register() {
                       <CheckCircle className="w-5 h-5 text-brand-orange" />
                     </div>
                     <div>
-                      <h3 className="font-semibold text-brand-black">{benefit.title}</h3>
+                      <h3 className="font-semibold text-foreground">{benefit.title}</h3>
                       <p className="text-brand-gray-2 text-sm mt-1">{benefit.description}</p>
                     </div>
                   </div>
@@ -264,7 +264,7 @@ export default function Register() {
               </div>
 
               {/* Testimonial */}
-              <div className="mt-12 p-6 bg-white rounded-2xl shadow-card">
+              <div className="mt-12 p-6 bg-card rounded-2xl shadow-card">
                 <div className="flex items-center gap-1 mb-4">
                   {[...Array(5)].map((_, i) => (
                     <Sparkles key={i} className="w-5 h-5 text-brand-orange fill-brand-orange" />
@@ -278,7 +278,7 @@ export default function Register() {
                     SC
                   </div>
                   <div>
-                    <p className="font-semibold text-brand-black">Sarah Chen</p>
+                    <p className="font-semibold text-foreground">Sarah Chen</p>
                     <p className="text-sm text-brand-gray-2">Software Engineer at Google</p>
                   </div>
                 </div>

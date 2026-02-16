@@ -96,7 +96,7 @@ export default function Terms() {
               <FileText className="w-4 h-4" />
               <span>服务条款</span>
             </div>
-            <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
+            <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-6">
               服务条款
             </h1>
             <p className="text-lg text-gray-600">
@@ -126,7 +126,7 @@ export default function Terms() {
                   <div className="w-10 h-10 rounded-xl bg-blue-100 flex items-center justify-center">
                     <section.icon className="w-5 h-5 text-blue-600" />
                   </div>
-                  <h2 className="text-2xl font-bold text-gray-900">{section.title}</h2>
+                  <h2 className="text-2xl font-bold text-foreground">{section.title}</h2>
                 </div>
                 <div className="prose prose-gray max-w-none">
                   {section.content.split('\n\n').map((paragraph, pIndex) => (
@@ -141,7 +141,7 @@ export default function Terms() {
                           ))}
                         </ul>
                       ) : (
-                        <p className="text-gray-600 leading-relaxed">{paragraph}</p>
+                        <p className="text-gray-600 leading-relaxed text-foreground/90">{paragraph}</p>
                       )}
                     </div>
                   ))}
@@ -154,7 +154,7 @@ export default function Terms() {
         {/* Contact Section */}
         <div className="py-12 bg-gray-50">
           <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <h2 className="text-2xl font-bold text-gray-900 mb-4">联系我们</h2>
+            <h2 className="text-2xl font-bold text-foreground mb-4">联系我们</h2>
             <p className="text-gray-600 mb-6">
               如果您对这些服务条款有任何疑问，请随时与我们联系。
             </p>

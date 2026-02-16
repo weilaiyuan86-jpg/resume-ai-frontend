@@ -42,7 +42,7 @@ export default function Cookies() {
               <Cookie className="w-4 h-4" />
               <span>Cookie 政策</span>
             </div>
-            <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
+            <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-6">
               Cookie 政策
             </h1>
             <p className="text-lg text-gray-600">
@@ -70,7 +70,7 @@ export default function Cookies() {
               <div className="w-10 h-10 rounded-xl bg-blue-100 flex items-center justify-center">
                 <Cookie className="w-5 h-5 text-blue-600" />
               </div>
-              <h2 className="text-2xl font-bold text-gray-900">什么是 Cookie？</h2>
+              <h2 className="text-2xl font-bold text-foreground">什么是 Cookie？</h2>
             </div>
             <p className="text-gray-600 leading-relaxed mb-4">
               Cookie 是在您访问网站时存储在您计算机或移动设备上的小型文本文件。它们被广泛用于使网站正常工作或更高效地工作，以及向网站所有者提供信息。
@@ -88,7 +88,7 @@ export default function Cookies() {
               <div className="w-10 h-10 rounded-xl bg-blue-100 flex items-center justify-center">
                 <Settings className="w-5 h-5 text-blue-600" />
               </div>
-              <h2 className="text-2xl font-bold text-gray-900">我们使用的 Cookie 类型</h2>
+              <h2 className="text-2xl font-bold text-foreground">我们使用的 Cookie 类型</h2>
             </div>
             
             <div className="space-y-6">
@@ -96,7 +96,7 @@ export default function Cookies() {
                 <div key={index} className="bg-white rounded-xl p-6 shadow-sm border">
                   <div className="flex items-start justify-between mb-4">
                     <div>
-                      <h3 className="font-semibold text-gray-900">{type.name}</h3>
+                      <h3 className="font-semibold text-foreground">{type.name}</h3>
                       <p className="text-sm text-gray-500 mt-1">{type.description}</p>
                     </div>
                     {type.required ? (
@@ -130,7 +130,7 @@ export default function Cookies() {
               <div className="w-10 h-10 rounded-xl bg-blue-100 flex items-center justify-center">
                 <Shield className="w-5 h-5 text-blue-600" />
               </div>
-              <h2 className="text-2xl font-bold text-gray-900">如何管理 Cookie</h2>
+              <h2 className="text-2xl font-bold text-foreground">如何管理 Cookie</h2>
             </div>
             <p className="text-gray-600 leading-relaxed mb-4">
               大多数网络浏览器允许您通过浏览器设置控制 Cookie。以下是一些常见浏览器的 Cookie 管理指南：
@@ -167,7 +167,7 @@ export default function Cookies() {
               <div className="w-10 h-10 rounded-xl bg-blue-100 flex items-center justify-center">
                 <Eye className="w-5 h-5 text-blue-600" />
               </div>
-              <h2 className="text-2xl font-bold text-gray-900">第三方 Cookie</h2>
+              <h2 className="text-2xl font-bold text-foreground">第三方 Cookie</h2>
             </div>
             <p className="text-gray-600 leading-relaxed mb-4">
               我们可能会使用第三方服务提供商来帮助我们分析和改进我们的服务。这些第三方可能会在您访问我们的网站时设置自己的 Cookie。
@@ -181,7 +181,7 @@ export default function Cookies() {
         {/* Contact Section */}
         <div className="py-12">
           <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <h2 className="text-2xl font-bold text-gray-900 mb-4">联系我们</h2>
+            <h2 className="text-2xl font-bold text-foreground mb-4">联系我们</h2>
             <p className="text-gray-600 mb-6">
               如果您对本 Cookie 政策有任何疑问，请随时与我们联系。
             </p>
