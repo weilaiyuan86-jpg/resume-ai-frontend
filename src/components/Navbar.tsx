@@ -46,7 +46,7 @@ export default function Navbar() {
   const location = useLocation();
   const { config } = useSiteConfig();
   const navItems = (config.header?.navItems?.length ? config.header.navItems : navLinks);
-  const brandName = (config.header?.logo && config.header.logo.trim()) || 'ResumeAI';
+  const brandName = (config.header?.logo && config.header.logo.trim()) || 'EvalShare';
   const brandInitial = brandName.charAt(0).toUpperCase();
 
   useEffect(() => {

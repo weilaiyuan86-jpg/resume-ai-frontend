@@ -155,7 +155,7 @@ export default function CTA() {
             </Link>
             <a
               href="/extension/resumeai-extension.zip"
-              download="ResumeAI-Extension.zip"
+              download="EvalShare-Extension.zip"
               className="inline-flex items-center justify-center rounded-xl border border-white/70 text-white hover:text-brand-orange bg-white/10 hover:bg-white px-6 h-16 text-lg font-semibold transition-colors"
             >
               安装 Chrome 插件

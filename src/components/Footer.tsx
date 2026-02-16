@@ -59,7 +59,7 @@ export default function Footer() {
               </div>
               <div>
                 <div className="flex items-center gap-2 mb-1">
-                  <h3 className="font-bold text-lg">ResumeAI Chrome 插件</h3>
+                  <h3 className="font-bold text-lg">EvalShare Chrome 插件</h3>
                   <div className="flex items-center gap-1 text-yellow-400">
                     <Star className="w-4 h-4 fill-current" />
                     <span className="text-sm font-medium">4.8</span>
@@ -76,7 +76,7 @@ export default function Footer() {
               </div>
               <a
                 href="/extension/resumeai-extension.zip"
-                download="ResumeAI-Extension.zip"
+                download="EvalShare-Extension.zip"
                 className="inline-flex items-center gap-2 bg-brand-orange hover:bg-brand-orange/90 text-white px-4 py-2 rounded-md"
               >
                 <Download className="w-4 h-4" />

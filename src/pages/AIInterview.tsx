@@ -1356,7 +1356,7 @@ export default function AIInterview() {
         <div className="flex items-center gap-4">
           <Link to="/" className="flex items-center gap-2">
             <Sparkles className="w-5 h-5 text-primary" />
-            <span className="font-semibold hidden sm:inline">ResumeAI</span>
+            <span className="font-semibold hidden sm:inline">EvalShare</span>
           </Link>
           <div className="h-4 w-px bg-border hidden sm:block" />
           <span className="text-sm text-muted-foreground truncate max-w-[150px] sm:max-w-none">

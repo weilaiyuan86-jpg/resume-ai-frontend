@@ -722,7 +722,18 @@ export default function ResumeEditor() {
     if (!Number.isFinite(numericId)) return;
     const load = async () => {
       try {
-        const resp = await fetch(`${API_BASE_URL}/resumes/${numericId}`);
+        const token =
+          typeof window === 'undefined'
+            ? null
+            : window.localStorage.getItem('auth_token');
+        if (!token) {
+          return;
+        }
+        const resp = await fetch(`${API_BASE_URL}/resumes/${numericId}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
         if (!resp.ok) return;
         const data = await resp.json();
         if (!data?.ok || !data.resume?.content) return;
@@ -746,8 +757,15 @@ export default function ResumeEditor() {
 
   const saveResume = async () => {
     try {
+      const token =
+        typeof window === 'undefined'
+          ? null
+          : window.localStorage.getItem('auth_token');
+      if (!token) {
+        alert('请先登录后再保存简历');
+        return;
+      }
       const payload = {
-        userId: 'demo-user',
         title: getResumeTitle(),
         content: JSON.stringify(resumeData),
       };
@@ -757,6 +775,7 @@ export default function ResumeEditor() {
         method,
         headers: {
           'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify(payload),
       });

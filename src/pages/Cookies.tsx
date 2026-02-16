@@ -55,7 +55,7 @@ export default function Cookies() {
         <div className="py-12 border-b">
           <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
             <p className="text-gray-600 leading-relaxed mb-6">
-              本 Cookie 政策解释了 ResumeAI（"我们"、"我们的"或"公司"）如何使用 Cookie 和类似技术来识别您何时访问我们的网站，以及我们如何使用这些信息。
+              本 Cookie 政策解释了 EvalShare（"我们"、"我们的"或"公司"）如何使用 Cookie 和类似技术来识别您何时访问我们的网站，以及我们如何使用这些信息。
             </p>
             <p className="text-gray-600 leading-relaxed">
               使用我们的服务即表示您同意我们按照本政策所述使用 Cookie。您可以随时通过浏览器设置管理您的 Cookie 偏好。

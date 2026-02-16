@@ -78,7 +78,7 @@ export default function About() {
               <span className="text-blue-600">精英简历平台</span>
             </h1>
             <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-              ResumeAI 成立于 2020 年，致力于帮助全球求职者打造专业简历，
+              EvalShare 成立于 2020 年，致力于帮助全球求职者打造专业简历，
               通过 AI 技术优化求职体验，助力每一位用户实现职业梦想。
             </p>
           </div>
@@ -105,7 +105,7 @@ export default function About() {
           <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
             <h2 className="text-3xl font-bold text-gray-900 mb-6">我们的使命</h2>
             <p className="text-lg text-gray-600 leading-relaxed">
-              在 ResumeAI，我们相信每个人都值得拥有一份能够展现自己价值的简历。
+              在 EvalShare，我们相信每个人都值得拥有一份能够展现自己价值的简历。
               我们的使命是通过先进的 AI 技术，帮助求职者突破语言和文化的障碍，
               在竞争激烈的就业市场中脱颖而出。无论你是应届生还是资深专业人士，
               我们都致力于为你提供最专业、最便捷的求职解决方案。
@@ -167,7 +167,7 @@ export default function About() {
               准备好开始您的求职之旅了吗？
             </h2>
             <p className="text-gray-600 mb-8">
-              加入 50,000+ 成功求职者的行列，让 ResumeAI 助您一臂之力
+              加入 50,000+ 成功求职者的行列，让 EvalShare 助您一臂之力
             </p>
             <div className="flex justify-center gap-4">
               <a

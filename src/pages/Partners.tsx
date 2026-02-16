@@ -60,21 +60,21 @@ const successStories = [
   {
     company: 'Tech University',
     type: '教育机构',
-    quote: 'ResumeAI 帮助我们的毕业生就业率提升了 35%。学生们反馈简历质量显著改善。',
+    quote: 'EvalShare 帮助我们的毕业生就业率提升了 35%。学生们反馈简历质量显著改善。',
     metric: '+35%',
     metricLabel: '就业率提升',
   },
   {
     company: 'Global HR Solutions',
     type: '招聘平台',
-    quote: '集成 ResumeAI 后，用户活跃度提升了 50%，简历投递转化率翻倍。',
+    quote: '集成 EvalShare 后，用户活跃度提升了 50%，简历投递转化率翻倍。',
     metric: '2x',
     metricLabel: '转化率提升',
   },
   {
     company: 'Fortune 500 Company',
     type: '企业客户',
-    quote: '为员工提供 ResumeAI 服务后，内部转岗成功率大幅提升，员工满意度创新高。',
+    quote: '为员工提供 EvalShare 服务后，内部转岗成功率大幅提升，员工满意度创新高。',
     metric: '+60%',
     metricLabel: '转岗成功率',
   },
@@ -116,7 +116,7 @@ export default function Partners() {
               成为合作伙伴
             </h1>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto mb-8">
-              与 ResumeAI 携手，共同帮助更多人实现职业梦想
+              与 EvalShare 携手，共同帮助更多人实现职业梦想
             </p>
             <div className="flex flex-wrap justify-center gap-4">
               <Button className="gap-2">

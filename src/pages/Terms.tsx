@@ -6,14 +6,14 @@ const sections = [
   {
     icon: CheckCircle,
     title: '接受条款',
-    content: `通过访问和使用 ResumeAI（"本服务"），您同意受这些服务条款（"条款"）的约束。如果您不同意这些条款的任何部分，您不得访问或使用本服务。
+    content: `通过访问和使用 EvalShare（"本服务"），您同意受这些服务条款（"条款"）的约束。如果您不同意这些条款的任何部分，您不得访问或使用本服务。
 
 我们保留随时修改这些条款的权利。修改后的条款将在本页面发布后立即生效。您继续使用本服务即表示您接受修改后的条款。`,
   },
   {
     icon: FileText,
     title: '服务描述',
-    content: `ResumeAI 提供以下服务：
+    content: `EvalShare 提供以下服务：
 
 1. 简历生成和编辑工具
 2. AI 驱动的简历优化建议
@@ -43,13 +43,13 @@ const sections = [
     title: '知识产权',
     content: `关于知识产权，您需要了解：
 
-1. 本服务的所有内容、功能和设计均为 ResumeAI 的财产，受版权、商标和其他知识产权法律的保护。
+1. 本服务的所有内容、功能和设计均为 EvalShare 的财产，受版权、商标和其他知识产权法律的保护。
 
 2. 您保留您创建内容的知识产权。通过使用本服务，您授予我们非独占的、免版税的许可，以使用、修改和展示您的内容，仅用于提供和改进我们的服务。
 
 3. 您不得复制、修改、分发、出售或出租本服务的任何部分，除非获得我们的明确书面许可。
 
-4. 我们的商标和商业外观不得用于任何非 ResumeAI 的产品或服务。`,
+4. 我们的商标和商业外观不得用于任何非 EvalShare 的产品或服务。`,
   },
   {
     icon: RefreshCw,
@@ -109,7 +109,7 @@ export default function Terms() {
         <div className="py-12 border-b">
           <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
             <p className="text-gray-600 leading-relaxed mb-6">
-              欢迎使用 ResumeAI！这些服务条款（"条款"）构成您与 ResumeAI Inc.（"我们"、"我们的"或"公司"）之间的法律协议。
+              欢迎使用 EvalShare！这些服务条款（"条款"）构成您与 EvalShare Inc.（"我们"、"我们的"或"公司"）之间的法律协议。
             </p>
             <p className="text-gray-600 leading-relaxed">
               请仔细阅读这些条款。通过访问或使用我们的服务，您确认您已阅读、理解并同意受这些条款的约束。

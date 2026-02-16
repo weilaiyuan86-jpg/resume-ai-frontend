@@ -25,7 +25,7 @@ const defaultHomepage: HomepageConfig = {
 
 const defaultConfig: SiteConfig = {
   header: {
-    logo: 'ResumeAI',
+    logo: 'EvalShare',
     navItems: [
       { name: '首页', href: '/' },
       { name: 'ATS检测', href: '/ats-checker' },
@@ -84,7 +84,7 @@ const defaultConfig: SiteConfig = {
       { name: 'Facebook', href: '#' },
       { name: 'Instagram', href: '#' },
     ],
-    copyright: `© ${new Date().getFullYear()} ResumeAI. 保留所有权利。`,
+    copyright: `© ${new Date().getFullYear()} EvalShare. 保留所有权利。`,
   },
   homepage: defaultHomepage,
   features: {

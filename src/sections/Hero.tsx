@@ -212,7 +212,7 @@ export default function Hero() {
                   </div>
                 </div>
                 <p className="text-xs text-brand-gray-1 mt-2 max-w-[200px]">
-                  "用ResumeAI创建的简历帮我拿到了Google的面试机会！"
+                  "用EvalShare创建的简历帮我拿到了Google的面试机会！"
                 </p>
               </div>
 

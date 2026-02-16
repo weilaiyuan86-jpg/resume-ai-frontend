@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { 
   Eye, EyeOff, Mail, Lock, User, ArrowRight, 
   Sparkles, CheckCircle, Github, Linkedin
@@ -11,16 +11,74 @@ import { Checkbox } from '@/components/ui/checkbox';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 
+const API_BASE_URL = import.meta.env.VITE_BACKEND_URL || 'http://82.29.197.201:3000';
+
 export default function Register() {
   const [showPassword, setShowPassword] = useState(false);
   const [fullName, setFullName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [agreeTerms, setAgreeTerms] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const navigate = useNavigate();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Handle registration logic
+    const trimmedEmail = email.trim().toLowerCase();
+    const plainPassword = password;
+    const name = fullName.trim();
+    if (!agreeTerms || !trimmedEmail || !plainPassword || !name) {
+      return;
+    }
+    setError(null);
+    setLoading(true);
+    try {
+      const response = await fetch(`${API_BASE_URL}/auth/register`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email: trimmedEmail,
+          password: plainPassword,
+          fullName: name,
+        }),
+      });
+      if (!response.ok) {
+        let message = '注册失败，请稍后再试';
+        try {
+          const data = await response.json();
+          if (data && typeof data.error === 'string') {
+            message = data.error;
+          }
+        } catch (err) {
+          console.error(err);
+        }
+        setError(message);
+        setLoading(false);
+        return;
+      }
+      const data = await response.json();
+      if (!data || !data.ok || !data.token || !data.user) {
+        setError('注册响应异常，请稍后再试');
+        setLoading(false);
+        return;
+      }
+      const user = {
+        id: data.user.id,
+        email: data.user.email,
+        role: 'user' as const,
+      };
+      localStorage.setItem('auth_token', data.token as string);
+      localStorage.setItem('user', JSON.stringify(user));
+      navigate('/resume-editor', { replace: true });
+    } catch (err) {
+      console.error(err);
+      setError('网络异常，请稍后重试');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -148,12 +206,15 @@ export default function Register() {
                   </Label>
                 </div>
 
+                {error && (
+                  <p className="text-sm text-red-500">{error}</p>
+                )}
                 <Button
                   type="submit"
-                  disabled={!agreeTerms}
+                  disabled={!agreeTerms || loading}
                   className="w-full h-12 bg-brand-orange hover:bg-brand-orange/90 text-white disabled:opacity-50"
                 >
-                  创建账户
+                  {loading ? '创建中...' : '创建账户'}
                   <ArrowRight className="ml-2 w-5 h-5" />
                 </Button>
               </form>
@@ -210,7 +271,7 @@ export default function Register() {
                   ))}
                 </div>
                 <p className="text-brand-gray-1 mb-4">
-                  "ResumeAI帮我优化了简历，两周内就收到了3个面试邀请。这个工具真的改变了我的求职体验！"
+                  "EvalShare帮我优化了简历，两周内就收到了3个面试邀请。这个工具真的改变了我的求职体验！"
                 </p>
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-400 to-blue-600 flex items-center justify-center text-white font-bold">

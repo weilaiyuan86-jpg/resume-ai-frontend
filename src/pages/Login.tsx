@@ -11,53 +11,101 @@ import { Checkbox } from '@/components/ui/checkbox';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 
+const API_BASE_URL = import.meta.env.VITE_BACKEND_URL || 'http://82.29.197.201:3000';
+
+type UserRole = 'super_admin' | 'admin' | 'viewer' | 'user';
+
 export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [rememberMe, setRememberMe] = useState(false);
+   const [loading, setLoading] = useState(false);
+   const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
   const location = useLocation();
 
   const from = (location.state as { from?: string } | null)?.from || '/';
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const trimmedEmail = email.trim().toLowerCase();
-    let role: 'super_admin' | 'admin' | 'viewer' | 'user' = 'user';
+    const plainPassword = password;
+    if (!trimmedEmail || !plainPassword) {
+      return;
+    }
+    setError(null);
+    setLoading(true);
     try {
-      const rawUsers = localStorage.getItem('users');
-      if (rawUsers) {
-        const parsed = JSON.parse(rawUsers) as {
-          email?: string;
-          role?: 'super_admin' | 'admin' | 'viewer' | 'user';
-        }[] | null;
-        if (Array.isArray(parsed)) {
-          const found = parsed.find(
-            (u) => u && typeof u.email === 'string' && u.email.toLowerCase() === trimmedEmail
-          );
-          if (found && found.role) {
-            role = found.role;
+      const response = await fetch(`${API_BASE_URL}/auth/login`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email: trimmedEmail,
+          password: plainPassword,
+        }),
+      });
+      if (!response.ok) {
+        let message = '登录失败，请检查邮箱和密码';
+        try {
+          const data = await response.json();
+          if (data && typeof data.error === 'string') {
+            message = data.error;
+          }
+        } catch (err) {
+          console.error(err);
+        }
+        setError(message);
+        setLoading(false);
+        return;
+      }
+      const data = await response.json();
+      if (!data || !data.ok || !data.token || !data.user) {
+        setError('登录响应异常，请稍后再试');
+        setLoading(false);
+        return;
+      }
+      let role: UserRole = 'user';
+      try {
+        const rawUsers = localStorage.getItem('users');
+        if (rawUsers) {
+          const parsed = JSON.parse(rawUsers) as {
+            email?: string;
+            role?: UserRole;
+          }[] | null;
+          if (Array.isArray(parsed)) {
+            const found = parsed.find(
+              (u) => u && typeof u.email === 'string' && u.email.toLowerCase() === trimmedEmail
+            );
+            if (found && found.role) {
+              role = found.role;
+            }
           }
         }
+      } catch (err) {
+        console.error(err);
       }
-    } catch (e) {
-      console.error(e);
-    }
-    if (trimmedEmail === 'admin@resumeai.local') {
-      role = 'super_admin';
-    }
-    const user = {
-      email: trimmedEmail,
-      role,
-    };
-    localStorage.setItem('auth_token', 'mock-token');
-    localStorage.setItem('user', JSON.stringify(user));
-
-    if (from === '/admin') {
-      navigate('/admin', { replace: true });
-    } else {
-      navigate(from, { replace: true });
+      if (trimmedEmail === 'admin@resumeai.local') {
+        role = 'super_admin';
+      }
+      const user = {
+        id: data.user.id,
+        email: data.user.email,
+        role,
+      };
+      localStorage.setItem('auth_token', data.token as string);
+      localStorage.setItem('user', JSON.stringify(user));
+      if (from === '/admin') {
+        navigate('/admin', { replace: true });
+      } else {
+        navigate(from, { replace: true });
+      }
+    } catch {
+      setError('网络异常，请稍后重试');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -167,11 +215,15 @@ export default function Login() {
                   </Link>
                 </div>
 
+                {error && (
+                  <p className="text-sm text-red-500">{error}</p>
+                )}
                 <Button
                   type="submit"
-                  className="w-full h-12 bg-brand-orange hover:bg-brand-orange/90 text-white"
+                  disabled={loading}
+                  className="w-full h-12 bg-brand-orange hover:bg-brand-orange/90 text-white disabled:opacity-50"
                 >
-                  登录
+                  {loading ? '登录中...' : '登录'}
                   <ArrowRight className="ml-2 w-5 h-5" />
                 </Button>
               </form>

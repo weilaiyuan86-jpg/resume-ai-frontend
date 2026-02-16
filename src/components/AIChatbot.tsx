@@ -20,7 +20,7 @@ interface Message {
 const getStoredChatbotConfig = () => {
   if (typeof window === 'undefined') {
     return {
-      welcome: '您好！我是 ResumeAI 的智能助手。请问有什么可以帮您？',
+      welcome: '您好！我是 EvalShare 的智能助手。请问有什么可以帮您？',
       quickQuestions: [
         '如何优化简历?',
         '免费版有什么限制?',
@@ -32,7 +32,7 @@ const getStoredChatbotConfig = () => {
   const raw = localStorage.getItem('aiPrompts');
   if (!raw) {
     return {
-      welcome: '您好！我是 ResumeAI 的智能助手。请问有什么可以帮您？',
+      welcome: '您好！我是 EvalShare 的智能助手。请问有什么可以帮您？',
       quickQuestions: [
         '如何优化简历?',
         '免费版有什么限制?',
@@ -43,7 +43,7 @@ const getStoredChatbotConfig = () => {
   }
   try {
     const parsed = JSON.parse(raw) as Record<string, string>;
-    const welcome = parsed.chatbot_welcome || '您好！我是 ResumeAI 的智能助手。请问有什么可以帮您？';
+    const welcome = parsed.chatbot_welcome || '您好！我是 EvalShare 的智能助手。请问有什么可以帮您？';
     const quick =
       parsed.chatbot_quick_questions
         ?.split('|')
@@ -60,7 +60,7 @@ const getStoredChatbotConfig = () => {
     };
   } catch {
     return {
-      welcome: '您好！我是 ResumeAI 的智能助手。请问有什么可以帮您？',
+      welcome: '您好！我是 EvalShare 的智能助手。请问有什么可以帮您？',
       quickQuestions: [
         '如何优化简历?',
         '免费版有什么限制?',
@@ -207,7 +207,7 @@ ATS是雇主用来筛选简历的自动化系统，它会：
 开始AI面试练习，提升面试表现！`;
   }
   
-  return `感谢您的提问！我是ResumeAI的智能助手，可以帮助您：
+  return `感谢您的提问！我是EvalShare的智能助手，可以帮助您：
 
 💼 简历优化建议
 🎯 ATS检测分析

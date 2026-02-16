@@ -12,7 +12,7 @@ const testimonials = [
     avatar: 'SC',
     avatarColor: 'from-blue-400 to-blue-600',
     rating: 5,
-    content: 'ResumeAI帮我优化了简历，突出了我的技术技能。两周内就收到了Google的面试邀请！',
+    content: 'EvalShare帮我优化了简历，突出了我的技术技能。两周内就收到了Google的面试邀请！',
   },
   {
     name: 'Michael Rodriguez',
@@ -44,7 +44,7 @@ const testimonials = [
     avatar: 'LT',
     avatarColor: 'from-pink-400 to-pink-600',
     rating: 5,
-    content: '作为设计师，我对简历的视觉效果要求很高。ResumeAI的模板既美观又专业。',
+    content: '作为设计师，我对简历的视觉效果要求很高。EvalShare的模板既美观又专业。',
   },
   {
     name: 'James Wilson',
@@ -52,7 +52,7 @@ const testimonials = [
     avatar: 'JW',
     avatarColor: 'from-yellow-400 to-yellow-600',
     rating: 5,
-    content: '金融行业对简历要求很严格，ResumeAI帮我创建了符合行业标准的简历。',
+    content: '金融行业对简历要求很严格，EvalShare帮我创建了符合行业标准的简历。',
   },
 ];
 

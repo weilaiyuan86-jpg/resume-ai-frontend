@@ -119,7 +119,7 @@ export default function Privacy() {
         <div className="py-12 border-b">
           <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
             <p className="text-gray-600 leading-relaxed mb-6">
-              ResumeAI（"我们"、"我们的"或"本公司"）高度重视您的隐私保护。本隐私政策旨在向您说明我们如何收集、使用、存储和保护您的个人信息。
+              EvalShare（"我们"、"我们的"或"本公司"）高度重视您的隐私保护。本隐私政策旨在向您说明我们如何收集、使用、存储和保护您的个人信息。
             </p>
             <p className="text-gray-600 leading-relaxed">
               使用我们的服务即表示您同意本隐私政策中描述的做法。如果您不同意本政策的任何部分，请停止使用我们的服务。

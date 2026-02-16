@@ -7,8 +7,8 @@ gsap.registerPlugin(ScrollTrigger);
 
 const faqs = [
   {
-    question: 'ResumeAI如何帮助我的求职？',
-    answer: 'ResumeAI使用先进的AI技术分析您的经历和目标职位，提供个性化的简历优化建议。我们的ATS检测确保您的简历能够通过求职者追踪系统，提高获得面试的机会。',
+    question: 'EvalShare如何帮助我的求职？',
+    answer: 'EvalShare使用先进的AI技术分析您的经历和目标职位，提供个性化的简历优化建议。我们的ATS检测确保您的简历能够通过求职者追踪系统，提高获得面试的机会。',
   },
   {
     question: '免费版和专业版有什么区别？',
@@ -23,7 +23,7 @@ const faqs = [
     answer: '您可以随时在账户设置中取消订阅，无需任何理由。取消后，您仍可使用服务直到当前计费周期结束。我们不会收取任何取消费用。',
   },
   {
-    question: 'ResumeAI支持哪些文件格式？',
+    question: 'EvalShare支持哪些文件格式？',
     answer: '我们支持PDF和Word（.docx）格式的导出。PDF格式适合在线申请，Word格式便于进一步编辑。所有格式都经过优化，确保ATS兼容性。',
   },
   {

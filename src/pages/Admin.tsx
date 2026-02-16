@@ -183,7 +183,7 @@ const defaultPrompts = {
 5. 建议修改的具体段落或要点示例（可以给出 2～3 条优化前后对比）
 6. 一份简短的整体优化建议，帮助候选人提高被筛选通过的概率`,
 
-  chatbot_welcome: `您好！我是 ResumeAI 的智能助手，可以帮你：
+  chatbot_welcome: `您好！我是 EvalShare 的智能助手，可以帮你：
 
 - 评估简历通过 ATS 的概率
 - 给出针对职位的优化建议
@@ -275,12 +275,12 @@ const sampleArticles: BlogArticle[] = [
     content: '',
     category: '简历技巧',
     tags: ['ATS', '技术简历', '求职技巧'],
-    author: 'ResumeAI Team',
+    author: 'EvalShare Team',
     status: 'published',
     publishDate: '2024-01-15',
     views: 3240,
     featured: true,
-    seoTitle: 'ATS友好的技术简历写作指南 | ResumeAI',
+    seoTitle: 'ATS友好的技术简历写作指南 | EvalShare',
     seoDescription: '学习如何写出通过ATS筛选的技术简历，提高面试机会',
     keywords: ['ATS简历', '技术简历', '简历优化', '求职'],
   },
@@ -292,7 +292,7 @@ const sampleArticles: BlogArticle[] = [
     content: '',
     category: '签证资讯',
     tags: ['H1B', '工作签证', '美国求职'],
-    author: 'ResumeAI Team',
+    author: 'EvalShare Team',
     status: 'published',
     publishDate: '2024-01-10',
     views: 5120,
@@ -309,7 +309,7 @@ const sampleArticles: BlogArticle[] = [
     content: '',
     category: '面试准备',
     tags: ['面试', '硅谷', '软件工程师'],
-    author: 'ResumeAI Team',
+    author: 'EvalShare Team',
     status: 'published',
     publishDate: '2024-01-08',
     views: 2890,
@@ -1869,7 +1869,7 @@ export default function Admin() {
                     const url = '/extension/resumeai-extension.zip';
                     const a = document.createElement('a');
                     a.href = url;
-                    a.download = 'ResumeAI-Extension.zip';
+                    a.download = 'EvalShare-Extension.zip';
                     document.body.appendChild(a);
                     a.click();
                     document.body.removeChild(a);
@@ -2353,12 +2353,12 @@ export default function Admin() {
               category,
               tags: responseTags,
               seoTitle:
-                payload.seoTitle || `${mainKeyword}完整指南 | ResumeAI`,
+                payload.seoTitle || `${mainKeyword}完整指南 | EvalShare`,
               seoDescription:
                 payload.seoDescription ||
                 `学习${mainKeyword}的最佳实践，提高求职成功率`,
               keywords: responseKeywords,
-              author: payload.author || 'ResumeAI AI助手',
+              author: payload.author || 'EvalShare AI助手',
               status: 'draft',
               publishDate: new Date().toISOString().split('T')[0],
               views: 0,
@@ -2383,10 +2383,10 @@ export default function Admin() {
       content: `## 引言\n\n在当今竞争激烈的就业市场中，${fallbackMainKeyword}变得越来越重要...\n\n## 主要内容\n\n### 1. 了解基本要求\n\n首先，你需要了解...\n\n### 2. 准备必要材料\n\n确保你准备好以下材料...\n\n### 3. 优化你的方法\n\n使用以下策略来提升...\n\n## 结论\n\n通过遵循这些建议，你可以...`,
       category: '职场发展',
       tags: fallbackKeywords.slice(0, 5),
-      seoTitle: `${fallbackMainKeyword}完整指南 | ResumeAI`,
+      seoTitle: `${fallbackMainKeyword}完整指南 | EvalShare`,
       seoDescription: `学习${fallbackMainKeyword}的最佳实践，提高求职成功率`,
       keywords: fallbackKeywords,
-      author: 'ResumeAI AI助手',
+      author: 'EvalShare AI助手',
       status: 'draft',
       publishDate: new Date().toISOString().split('T')[0],
       views: 0,
