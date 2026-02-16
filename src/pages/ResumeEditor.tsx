@@ -26,6 +26,8 @@ import gsap from 'gsap';
 import { Switch } from '@/components/ui/switch';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
+const API_BASE_URL = import.meta.env.VITE_BACKEND_URL || 'http://82.29.197.201:3000';
+
 interface Experience {
   id: string;
   company: string;
@@ -152,6 +154,7 @@ export default function ResumeEditor() {
   const location = useLocation();
   const [activeSection, setActiveSection] = useState('experience');
   const [resumeData, setResumeData] = useState<ResumeData>(initialData);
+  const [resumeId, setResumeId] = useState<number | null>(null);
   const [showPreview] = useState(true);
   const [isImportOpen, setIsImportOpen] = useState(false);
   const [showAIPolish, setShowAIPolish] = useState(false);
@@ -711,6 +714,62 @@ export default function ResumeEditor() {
     }
   };
 
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const id = params.get('id');
+    if (!id) return;
+    const numericId = Number(id);
+    if (!Number.isFinite(numericId)) return;
+    const load = async () => {
+      try {
+        const resp = await fetch(`${API_BASE_URL}/resumes/${numericId}`);
+        if (!resp.ok) return;
+        const data = await resp.json();
+        if (!data?.ok || !data.resume?.content) return;
+        const parsed = JSON.parse(data.resume.content) as ResumeData;
+        setResumeData(parsed);
+        setResumeId(data.resume.id as number);
+      } catch (error) {
+        console.error("Failed to load resume", error);
+      }
+    };
+    load();
+  }, [location.search]);
+
+  const getResumeTitle = () => {
+    const name = resumeData.personalInfo.fullName?.trim();
+    const title = resumeData.personalInfo.title?.trim();
+    if (name && title) return `${name} · ${title}`;
+    if (name) return `${name} · Resume`;
+    return 'My Resume';
+  };
+
+  const saveResume = async () => {
+    try {
+      const payload = {
+        userId: 'demo-user',
+        title: getResumeTitle(),
+        content: JSON.stringify(resumeData),
+      };
+      const url = resumeId ? `${API_BASE_URL}/resumes/${resumeId}` : `${API_BASE_URL}/resumes`;
+      const method = resumeId ? 'PUT' : 'POST';
+      const resp = await fetch(url, {
+        method,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(payload),
+      });
+      if (!resp.ok) return;
+      const data = await resp.json();
+      if (data?.ok && data.resume?.id) {
+        setResumeId(data.resume.id as number);
+      }
+    } catch (error) {
+      console.error("Failed to save resume", error);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
@@ -784,6 +843,15 @@ export default function ResumeEditor() {
               <CheckCircle className="w-4 h-4 text-emerald-500" />
               <span className="text-sm font-medium text-emerald-600">数据同步成功</span>
             </div>
+            <Button
+              size="sm"
+              variant="outline"
+              className="gap-2"
+              onClick={saveResume}
+            >
+              <CheckCircle className="w-4 h-4" />
+              保存到云端
+            </Button>
             <Button
               size="sm"
               className="gap-2 bg-brand-orange hover:bg-brand-orange/90 text-white"
