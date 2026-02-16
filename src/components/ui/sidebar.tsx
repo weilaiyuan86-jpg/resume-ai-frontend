@@ -24,7 +24,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip"
-import { SidebarContext } from "@/components/ui/sidebar-base"
+import { SidebarContext, type SidebarContextProps } from "@/components/ui/sidebar-base"
 import { useSidebar } from "@/components/ui/use-sidebar"
 
 const SIDEBAR_COOKIE_NAME = "sidebar_state"

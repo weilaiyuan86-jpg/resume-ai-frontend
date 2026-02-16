@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <title>ResumeAI 插件</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <style>
+      body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", "PingFang SC", "Microsoft YaHei", sans-serif; margin: 0; padding: 12px; width: 320px; }
+      .btn { display: flex; align-items: center; gap: 8px; width: 100%; padding: 10px 12px; border-radius: 10px; border: 1px solid #e5e7eb; background: #fff; color: #111827; cursor: pointer; margin-bottom: 8px; }
+      .btn.primary { background: #2563eb; color: #fff; border-color: #1d4ed8; }
+      .btn:hover { background: #f9fafb; }
+      .btn.primary:hover { background: #1d4ed8; }
+      .muted { color: #6b7280; font-size: 12px; }
+      .row { display: flex; gap: 8px; }
+      .row .btn { flex: 1; }
+    </style>
+  </head>
+  <body>
+    <h3 style="margin:0 0 10px 0;">ResumeAI Chrome 插件</h3>
+    <p class="muted" style="margin:0 0 12px 0;">提取职位/个人资料并导入编辑器</p>
+    <button id="btn-extract-open" class="btn primary">一键导入当前页面到编辑器</button>
+    <div class="row" style="margin:8px 0;">
+      <select id="tpl-select" class="btn" style="height:38px;">
+        <option value="">不选择模板</option>
+        <option value="1">Modern Tech Pro</option>
+        <option value="2">Minimal Developer</option>
+        <option value="3">Classic Senior</option>
+        <option value="4">Creative Coder</option>
+        <option value="5">Elegant Manager</option>
+      </select>
+    </div>
+    <div class="row">
+      <button id="btn-open-editor" class="btn">仅打开编辑器</button>
+      <button id="btn-extract" class="btn">仅提取当前页面</button>
+    </div>
+    <hr style="margin:10px 0; border:none; border-top:1px solid #eee;" />
+    <div class="row">
+      <button id="btn-ats" class="btn">ATS 匹配评分</button>
+      <button id="btn-cover" class="btn">AI 生成求职信</button>
+    </div>
+    <div style="margin-top:8px;">
+      <label class="muted">API Base</label>
+      <input id="api-base" type="text" class="btn" placeholder="https://api.resumeai.com" />
+      <label class="muted">Auth Token</label>
+      <input id="api-token" type="password" class="btn" placeholder="可留空" />
+      <div class="row">
+        <button id="btn-save-api" class="btn">保存配置</button>
+      </div>
+    </div>
+    <div id="result" class="muted"></div>
+    <script src="popup.js"></script>
+  </body>
+</html>

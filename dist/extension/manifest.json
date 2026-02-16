@@ -1,0 +1,47 @@
+{
+  "manifest_version": 3,
+  "name": "ResumeAI Helper",
+  "description": "一键提取职位/个人资料并导入 ResumeAI 编辑器，支持 AI 清洗与模板应用。",
+  "version": "0.1.0",
+  "action": {
+    "default_title": "ResumeAI",
+    "default_popup": "popup.html"
+  },
+  "permissions": [
+    "activeTab",
+    "scripting",
+    "tabs",
+    "storage"
+  ],
+  "host_permissions": [
+    "https://*.linkedin.com/*",
+    "https://*.indeed.com/*",
+    "https://*.glassdoor.com/*",
+    "https://*.lever.co/*",
+    "https://*.greenhouse.io/*",
+    "http://localhost:5175/*"
+  ],
+  "background": {
+    "service_worker": "background.js",
+    "type": "module"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://*.linkedin.com/*",
+        "https://*.indeed.com/*",
+        "https://*.glassdoor.com/*",
+        "https://*.lever.co/*",
+        "https://*.greenhouse.io/*",
+        "http://localhost:5175/*"
+      ],
+      "js": ["content.js"],
+      "run_at": "document_idle"
+    }
+  ],
+  "icons": {
+    "16": "icon-16.png",
+    "48": "icon-48.png",
+    "128": "icon-128.png"
+  }
+}
