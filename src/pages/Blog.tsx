@@ -271,7 +271,7 @@ function ArticleDetail({ article, onBack }: { article: typeof allArticles[0]; on
 
           {/* Article Header */}
           <div className="mb-8">
-            <Badge className={`mb-4 ${article.category === 'resume' ? 'bg-blue-100 text-blue-700' : article.category === 'interview' ? 'bg-purple-100 text-purple-700' : article.category === 'visa' ? 'bg-orange-100 text-orange-700' : article.category === 'career' ? 'bg-green-100 text-green-700' : 'bg-pink-100 text-pink-700'}`}>
+            <Badge className="mb-4 bg-brand-orange/10 text-brand-orange">
               {categories.find(c => c.id === article.category)?.name || article.category}
             </Badge>
             <h1 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
@@ -449,17 +449,13 @@ function BlogList({ onArticleClick }: { onArticleClick?: (article: typeof allArt
 
   const getCategoryColor = (id: string) => {
     const colors: Record<string, string> = {
-      resume: 'bg-blue-100 text-blue-700',
-      interview: 'bg-purple-100 text-purple-700',
-      visa: 'bg-orange-100 text-orange-700',
-      career: 'bg-green-100 text-green-700',
-      networking: 'bg-pink-100 text-pink-700',
+      default: 'bg-brand-orange/10 text-brand-orange',
     };
-    return colors[id] || 'bg-gray-100 text-gray-700';
+    return colors.default;
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-brand-gray-3/50">
       <Navbar />
       <main className="pt-24 pb-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -474,32 +470,34 @@ function BlogList({ onArticleClick }: { onArticleClick?: (article: typeof allArt
                       alt={featuredArticle.title}
                       className="w-full h-full object-cover"
                     />
-                    <Badge className="absolute top-4 left-4 bg-blue-600 text-white">
+                    <Badge className="absolute top-4 left-4 bg-brand-orange text-white">
                       精选推荐
                     </Badge>
                   </div>
                   <div className="p-8 flex flex-col justify-center">
-                    <div className="flex items-center gap-4 mb-4 text-sm text-gray-500">
+                    <div className="flex items-center gap-4 mb-4 text-sm text-brand-gray-2">
                       <span className="flex items-center gap-1">
-                        <Clock className="w-4 h-4" />
+                        <Clock className="w-4 h-4 text-brand-orange" />
                         {featuredArticle.readTime}阅读
                       </span>
-                      <Badge variant="outline" className="text-xs">进阶</Badge>
+                      <Badge variant="outline" className="text-xs border-brand-orange/30 text-brand-orange bg-white">
+                        进阶
+                      </Badge>
                     </div>
-                    <h2 className="text-2xl lg:text-3xl font-bold text-gray-900 mb-4">
+                    <h2 className="text-2xl lg:text-3xl font-bold text-brand-black mb-4">
                       {featuredArticle.title}
                     </h2>
-                    <p className="text-gray-600 mb-6">{featuredArticle.excerpt}</p>
+                    <p className="text-brand-gray-2 mb-6">{featuredArticle.excerpt}</p>
                     <div className="flex items-center gap-4">
                       <Button
-                        className="bg-blue-600 hover:bg-blue-700 text-white gap-2"
+                        className="bg-brand-orange hover:bg-brand-orange/90 text-white gap-2 shadow-glow hover:shadow-glow-strong transition-all duration-300 ease-elastic hover:scale-105"
                         onClick={() => onArticleClick?.(featuredArticle)}
                       >
                         立即阅读
                         <ArrowRight className="w-4 h-4" />
                       </Button>
-                      <button className="p-2 hover:bg-gray-100 rounded-full">
-                        <Bookmark className="w-5 h-5 text-gray-400" />
+                      <button className="p-2 hover:bg-brand-gray-3 rounded-full">
+                        <Bookmark className="w-5 h-5 text-brand-gray-2" />
                       </button>
                     </div>
                   </div>
@@ -513,14 +511,14 @@ function BlogList({ onArticleClick }: { onArticleClick?: (article: typeof allArt
             <div className="lg:col-span-2">
               {/* Header */}
               <div className="flex items-center justify-between mb-6">
-                <h2 className="text-xl font-bold text-gray-900">最新文章</h2>
+                <h2 className="text-xl font-bold text-brand-black">最新文章</h2>
                 <div className="flex items-center gap-2">
                   <button
                     onClick={() => setSortBy('newest')}
                     className={`px-3 py-1.5 rounded-full text-sm ${
                       sortBy === 'newest'
-                        ? 'bg-blue-100 text-blue-700'
-                        : 'text-gray-500 hover:bg-gray-100'
+                        ? 'bg-brand-orange/10 text-brand-orange'
+                        : 'text-brand-gray-2 hover:bg-brand-gray-3'
                     }`}
                   >
                     最新
@@ -529,8 +527,8 @@ function BlogList({ onArticleClick }: { onArticleClick?: (article: typeof allArt
                     onClick={() => setSortBy('popular')}
                     className={`px-3 py-1.5 rounded-full text-sm ${
                       sortBy === 'popular'
-                        ? 'bg-blue-100 text-blue-700'
-                        : 'text-gray-500 hover:bg-gray-100'
+                        ? 'bg-brand-orange/10 text-brand-orange'
+                        : 'text-brand-gray-2 hover:bg-brand-gray-3'
                     }`}
                   >
                     最热
@@ -543,7 +541,7 @@ function BlogList({ onArticleClick }: { onArticleClick?: (article: typeof allArt
                 {sortedArticles.map((article) => (
                   <article
                     key={article.id}
-                    className="blog-card bg-white rounded-xl shadow-sm overflow-hidden hover:shadow-md transition-shadow group"
+                    className="blog-card bg-white rounded-xl shadow-card overflow-hidden hover:shadow-glow transition-shadow group"
                     onClick={() => onArticleClick?.(article)}
                   >
                     <div className="relative h-48 overflow-hidden">
@@ -557,15 +555,15 @@ function BlogList({ onArticleClick }: { onArticleClick?: (article: typeof allArt
                       </Badge>
                     </div>
                     <div className="p-5">
-                      <h3 className="font-semibold text-gray-900 mb-2 line-clamp-2 group-hover:text-blue-600 transition-colors">
+                      <h3 className="font-semibold text-brand-black mb-2 line-clamp-2 group-hover:text-brand-orange transition-colors">
                         {article.title}
                       </h3>
-                      <p className="text-sm text-gray-600 mb-4 line-clamp-2">
+                      <p className="text-sm text-brand-gray-2 mb-4 line-clamp-2">
                         {article.excerpt}
                       </p>
-                      <div className="flex items-center justify-between text-xs text-gray-400">
+                      <div className="flex items-center justify-between text-xs text-brand-gray-2">
                         <span className="flex items-center gap-1">
-                          <Clock className="w-3 h-3" />
+                          <Clock className="w-3 h-3 text-brand-orange" />
                           {article.readTime}
                         </span>
                         <span>{article.date}</span>
@@ -588,9 +586,9 @@ function BlogList({ onArticleClick }: { onArticleClick?: (article: typeof allArt
             <div className="space-y-6">
               {/* Search */}
               <div className="bg-white rounded-xl shadow-sm p-5">
-                <h3 className="font-semibold text-gray-900 mb-4">搜索文章</h3>
+                <h3 className="font-semibold text-brand-black mb-4">搜索文章</h3>
                 <div className="relative">
-                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-brand-gray-2" />
                   <Input
                     placeholder="输入关键词，如 'OPT', '简历'..."
                     value={searchQuery}
@@ -602,12 +600,12 @@ function BlogList({ onArticleClick }: { onArticleClick?: (article: typeof allArt
 
               {/* Hot Topics */}
               <div className="bg-white rounded-xl shadow-sm p-5">
-                <h3 className="font-semibold text-gray-900 mb-4">热门话题</h3>
+                <h3 className="font-semibold text-brand-black mb-4">热门话题</h3>
                 <div className="flex flex-wrap gap-2">
                   {hotTopics.map((topic) => (
                     <button
                       key={topic}
-                      className="px-3 py-1.5 bg-gray-100 hover:bg-blue-100 text-gray-600 hover:text-blue-700 rounded-full text-sm transition-colors"
+                      className="px-3 py-1.5 bg-brand-gray-3 hover:bg-brand-orange/10 text-brand-gray-2 hover:text-brand-orange rounded-full text-sm transition-colors"
                     >
                       {topic}
                     </button>
@@ -616,12 +614,12 @@ function BlogList({ onArticleClick }: { onArticleClick?: (article: typeof allArt
               </div>
 
               {/* Newsletter */}
-              <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl p-5 border border-blue-100">
+              <div className="bg-gradient-to-br from-brand-orange/5 via-white to-brand-orange/5 rounded-xl p-5 border border-brand-orange/20">
                 <div className="flex items-center gap-2 mb-3">
-                  <Mail className="w-5 h-5 text-blue-600" />
-                  <h3 className="font-semibold text-gray-900">订阅职业周报</h3>
+                  <Mail className="w-5 h-5 text-brand-orange" />
+                  <h3 className="font-semibold text-brand-black">订阅职业周报</h3>
                 </div>
-                <p className="text-sm text-gray-600 mb-4">
+                <p className="text-sm text-brand-gray-2 mb-4">
                   每周获取最新的美国求职趋势、内部职位机会与签证政策动态。
                 </p>
                 <Input
@@ -630,22 +628,22 @@ function BlogList({ onArticleClick }: { onArticleClick?: (article: typeof allArt
                   onChange={(e) => setEmail(e.target.value)}
                   className="mb-3"
                 />
-                <Button className="w-full bg-blue-600 hover:bg-blue-700 text-white">
+                <Button className="w-full bg-brand-orange hover:bg-brand-orange/90 text-white shadow-glow hover:shadow-glow-strong transition-all duration-300 ease-elastic hover:scale-105">
                   立即订阅
                 </Button>
-                <p className="text-xs text-gray-400 mt-3 text-center">
+                <p className="text-xs text-brand-gray-2 mt-3 text-center">
                   我们承诺不发送垃圾邮件，您可以随时取消订阅。
                 </p>
               </div>
 
               {/* Community */}
-              <div className="bg-white rounded-xl shadow-sm p-5">
+              <div className="bg-white rounded-xl shadow-card p-5">
                 <div className="flex items-center justify-between">
                   <div>
-                    <h3 className="font-semibold text-gray-900">加入求职社群</h3>
-                    <p className="text-sm text-gray-500">与 50,000+ 在美华人并肩作战</p>
+                    <h3 className="font-semibold text-brand-black">加入求职社群</h3>
+                    <p className="text-sm text-brand-gray-2">与 50,000+ 在美华人并肩作战</p>
                   </div>
-                  <ChevronRight className="w-5 h-5 text-gray-400" />
+                  <ChevronRight className="w-5 h-5 text-brand-gray-2" />
                 </div>
               </div>
             </div>

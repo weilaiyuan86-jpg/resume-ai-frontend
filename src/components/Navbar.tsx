@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Menu, X, ChevronDown, Zap, MessageSquare, PenTool, Briefcase, Mail } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { ThemeToggle } from './ThemeToggle';
@@ -28,6 +28,12 @@ export default function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [showAITools, setShowAITools] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(() => {
+    if (typeof window === 'undefined') return false;
+    const token = localStorage.getItem('auth_token');
+    const rawUser = localStorage.getItem('user');
+    return !!token && !!rawUser;
+  });
   const [userRole, setUserRole] = useState<UserRole | null>(() => {
     if (typeof window === 'undefined') return null;
     const raw = localStorage.getItem('user');
@@ -44,6 +50,7 @@ export default function Navbar() {
     }
   });
   const location = useLocation();
+  const navigate = useNavigate();
   const { config } = useSiteConfig();
   const navItems = (config.header?.navItems?.length ? config.header.navItems : navLinks);
   const brandName = (config.header?.logo && config.header.logo.trim()) || 'EvalShare';
@@ -58,11 +65,13 @@ export default function Navbar() {
   }, []);
 
   useEffect(() => {
-    const syncRole = () => {
+    const syncAuth = () => {
       if (typeof window === 'undefined') return;
+      const token = localStorage.getItem('auth_token');
       const raw = localStorage.getItem('user');
-      if (!raw) {
+      if (!token || !raw) {
         setUserRole(null);
+        setIsLoggedIn(false);
         return;
       }
       try {
@@ -73,13 +82,15 @@ export default function Navbar() {
         } else {
           setUserRole(null);
         }
+        setIsLoggedIn(true);
       } catch {
         setUserRole(null);
+        setIsLoggedIn(false);
       }
     };
-    syncRole();
-    window.addEventListener('storage', syncRole);
-    return () => window.removeEventListener('storage', syncRole);
+    syncAuth();
+    window.addEventListener('storage', syncAuth);
+    return () => window.removeEventListener('storage', syncAuth);
   }, []);
 
   const isActive = (path: string) => {
@@ -87,6 +98,19 @@ export default function Navbar() {
       return location.pathname === '/';
     }
     return location.pathname.startsWith(path);
+  };
+
+  const canAccessAdmin =
+    userRole === 'super_admin' || userRole === 'admin' || userRole === 'viewer';
+
+  const handleLogout = () => {
+    if (typeof window !== 'undefined') {
+      localStorage.removeItem('auth_token');
+      localStorage.removeItem('user');
+    }
+    setIsLoggedIn(false);
+    setUserRole(null);
+    navigate('/');
   };
 
   return (
@@ -197,19 +221,50 @@ export default function Navbar() {
                   : '普通用户'}
               </span>
             )}
-            <Link to="/login">
-              <Button
-                variant="ghost"
-                className="text-sm font-medium text-brand-gray-1 hover:text-brand-orange hover:bg-brand-orange/5"
-              >
-                登录
-              </Button>
-            </Link>
-            <Link to="/register">
-              <Button className="bg-brand-orange hover:bg-brand-orange/90 text-white shadow-glow hover:shadow-glow-strong transition-all duration-300 ease-elastic hover:scale-102 px-6">
-                免费开始
-              </Button>
-            </Link>
+            {isLoggedIn ? (
+              <>
+                {canAccessAdmin && (
+                  <Link to="/admin">
+                    <Button
+                      variant="outline"
+                      className="text-sm font-medium border-border"
+                    >
+                      后台管理
+                    </Button>
+                  </Link>
+                )}
+                <Link to="/profile">
+                  <Button
+                    variant="ghost"
+                    className="text-sm font-medium text-brand-gray-1 hover:text-brand-orange hover:bg-brand-orange/5"
+                  >
+                    个人中心
+                  </Button>
+                </Link>
+                <Button
+                  onClick={handleLogout}
+                  className="bg-brand-orange hover:bg-brand-orange/90 text-white px-5"
+                >
+                  退出登录
+                </Button>
+              </>
+            ) : (
+              <>
+                <Link to="/login">
+                  <Button
+                    variant="ghost"
+                    className="text-sm font-medium text-brand-gray-1 hover:text-brand-orange hover:bg-brand-orange/5"
+                  >
+                    登录
+                  </Button>
+                </Link>
+                <Link to="/register">
+                  <Button className="bg-brand-orange hover:bg-brand-orange/90 text-white shadow-glow hover:shadow-glow-strong transition-all duration-300 ease-elastic hover:scale-102 px-6">
+                    免费开始
+                  </Button>
+                </Link>
+              </>
+            )}
           </div>
 
           {/* Mobile Menu Button */}
@@ -274,19 +329,53 @@ export default function Navbar() {
                     : '普通用户'}
                 </div>
               )}
-              <Link to="/login" onClick={() => setIsMobileMenuOpen(false)}>
-                <Button
-                  variant="outline"
-                  className="w-full justify-center border-border"
-                >
-                  登录
-                </Button>
-              </Link>
-              <Link to="/register" onClick={() => setIsMobileMenuOpen(false)}>
-                <Button className="w-full justify-center bg-brand-orange hover:bg-brand-orange/90 text-white">
-                  免费开始
-                </Button>
-              </Link>
+              {isLoggedIn ? (
+                <>
+                  {canAccessAdmin && (
+                    <Link to="/admin" onClick={() => setIsMobileMenuOpen(false)}>
+                      <Button
+                        variant="outline"
+                        className="w-full justify-center border-border"
+                      >
+                        后台管理
+                      </Button>
+                    </Link>
+                  )}
+                  <Link to="/profile" onClick={() => setIsMobileMenuOpen(false)}>
+                    <Button
+                      variant="outline"
+                      className="w-full justify-center border-border"
+                    >
+                      个人中心
+                    </Button>
+                  </Link>
+                  <Button
+                    onClick={() => {
+                      handleLogout();
+                      setIsMobileMenuOpen(false);
+                    }}
+                    className="w-full justify-center bg-brand-orange hover:bg-brand-orange/90 text-white"
+                  >
+                    退出登录
+                  </Button>
+                </>
+              ) : (
+                <>
+                  <Link to="/login" onClick={() => setIsMobileMenuOpen(false)}>
+                    <Button
+                      variant="outline"
+                      className="w-full justify-center border-border"
+                    >
+                      登录
+                    </Button>
+                  </Link>
+                  <Link to="/register" onClick={() => setIsMobileMenuOpen(false)}>
+                    <Button className="w-full justify-center bg-brand-orange hover:bg-brand-orange/90 text-white">
+                      免费开始
+                    </Button>
+                  </Link>
+                </>
+              )}
             </div>
           </div>
         </div>
