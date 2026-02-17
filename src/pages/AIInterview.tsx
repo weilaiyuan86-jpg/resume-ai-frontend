@@ -521,25 +521,40 @@ export default function AIInterview() {
 
   // auth effect removed; initial state derived from useAuth
 
-  // Request camera/mic permissions
   useEffect(() => {
     if (!isLoggedIn) return;
-    
+
     let localStream: MediaStream | null = null;
+
     const requestPermissions = async () => {
       try {
-        localStream = await navigator.mediaDevices.getUserMedia({ 
-          video: true, 
-          audio: true 
+        if (
+          typeof navigator === 'undefined' ||
+          !navigator.mediaDevices ||
+          !navigator.mediaDevices.getUserMedia
+        ) {
+          setPermissionError('当前浏览器不支持摄像头或麦克风，请尝试使用最新版 Chrome / Edge');
+          return;
+        }
+
+        localStream = await navigator.mediaDevices.getUserMedia({
+          video: true,
+          audio: true,
         });
         setStream(localStream);
         if (videoRef.current) {
           videoRef.current.srcObject = localStream;
+          const playPromise = videoRef.current.play();
+          if (playPromise && typeof (playPromise as Promise<void>).catch === 'function') {
+            playPromise.catch((err) => {
+              console.error('Failed to start video playback', err);
+            });
+          }
         }
         setPermissionError(null);
       } catch (err) {
         console.error('Error accessing media devices:', err);
-        setPermissionError('无法访问摄像头或麦克风，请检查权限设置');
+        setPermissionError('无法访问摄像头或麦克风，请检查浏览器和系统权限设置');
       }
     };
 
@@ -547,7 +562,7 @@ export default function AIInterview() {
 
     return () => {
       if (localStream) {
-        localStream.getTracks().forEach(track => track.stop());
+        localStream.getTracks().forEach((track) => track.stop());
       }
     };
   }, [isLoggedIn]);

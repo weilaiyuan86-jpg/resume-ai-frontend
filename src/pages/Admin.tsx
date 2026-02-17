@@ -1075,18 +1075,31 @@ export default function Admin() {
       email: string;
       plan: string;
       role?: 'super_admin' | 'admin' | 'viewer' | 'user';
+      fullName?: string;
     }[]>(() => {
       if (typeof window !== 'undefined') {
         const raw = localStorage.getItem('users');
         if (!raw) return [];
-        const parsed = (() => { try { return JSON.parse(raw) } catch { return null } })();
+        const parsed = (() => {
+          try {
+            return JSON.parse(raw);
+          } catch {
+            return null;
+          }
+        })();
         if (!Array.isArray(parsed)) return [];
         return parsed.map((u) => {
           if (!u || typeof u !== 'object') return u;
+          const base = {
+            id: (u as any).id || Date.now().toString(),
+            email: (u as any).email || '',
+            plan: (u as any).plan || 'free',
+            fullName: (u as any).fullName,
+          };
           if (!('role' in u)) {
-            return { ...u, role: 'user' as const };
+            return { ...base, role: 'user' as const };
           }
-          return u;
+          return { ...base, role: (u as any).role };
         });
       }
       return [];
@@ -1119,7 +1132,12 @@ export default function Admin() {
     const addUser = () => {
       if (!email.trim()) return;
       const next = [
-        { id: Date.now().toString(), email: email.trim(), plan, role: 'user' as const },
+        {
+          id: Date.now().toString(),
+          email: email.trim(),
+          plan,
+          role: 'user' as const,
+        },
         ...usersList,
       ];
       saveUsers(next);
@@ -1167,7 +1185,7 @@ export default function Admin() {
       <div className="space-y-6">
         <div>
           <h2 className="text-xl font-bold text-gray-900">用户管理</h2>
-          <p className="text-sm text-gray-500">新增、删除用户（本地存储）</p>
+          <p className="text-sm text-gray-500">新增、删除用户，并在本地同步权限信息</p>
         </div>
         <div className="bg-white rounded-xl shadow-sm border p-6 grid grid-cols-3 gap-4">
           <div className="col-span-2">
@@ -1193,6 +1211,7 @@ export default function Admin() {
             <thead className="bg-gray-50 border-b">
               <tr>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">邮箱</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">姓名</th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">套餐</th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">角色</th>
                 <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">操作</th>
@@ -1202,6 +1221,7 @@ export default function Admin() {
               {usersList.map(user => (
                 <tr key={user.id} className="border-b last:border-0">
                   <td className="px-6 py-3 text-sm">{user.email}</td>
+                  <td className="px-6 py-3 text-sm">{user.fullName || '-'}</td>
                   <td className="px-6 py-3 text-sm">{user.plan}</td>
                   <td className="px-6 py-3 text-sm">
                     <Select

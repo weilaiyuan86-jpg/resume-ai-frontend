@@ -100,6 +100,39 @@ export default function Login() {
       };
       localStorage.setItem('auth_token', data.token as string);
       localStorage.setItem('user', JSON.stringify(user));
+      try {
+        const rawUsers = localStorage.getItem('users');
+        let users: { id: string; email: string; plan: string; role?: UserRole }[] = [];
+        if (rawUsers) {
+          const parsed = JSON.parse(rawUsers);
+          if (Array.isArray(parsed)) {
+            users = parsed;
+          }
+        }
+        const existingIndex = users.findIndex(
+          (u) => u && typeof u.email === 'string' && u.email.toLowerCase() === trimmedEmail,
+        );
+        if (existingIndex >= 0) {
+          users[existingIndex] = {
+            ...users[existingIndex],
+            email: data.user.email,
+            role,
+          };
+        } else {
+          users = [
+            {
+              id: data.user.id || Date.now().toString(),
+              email: data.user.email,
+              plan: 'free',
+              role,
+            },
+            ...users,
+          ];
+        }
+        localStorage.setItem('users', JSON.stringify(users));
+      } catch (err) {
+        console.error(err);
+      }
       if (typeof window !== 'undefined') {
         window.dispatchEvent(new Event('resumeai-auth-changed'));
       }

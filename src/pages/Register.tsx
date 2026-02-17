@@ -72,6 +72,33 @@ export default function Register() {
       };
       localStorage.setItem('auth_token', data.token as string);
       localStorage.setItem('user', JSON.stringify(user));
+      try {
+        const rawUsers = localStorage.getItem('users');
+        let users: { id: string; email: string; plan: string; role?: 'super_admin' | 'admin' | 'viewer' | 'user' }[] = [];
+        if (rawUsers) {
+          const parsed = JSON.parse(rawUsers);
+          if (Array.isArray(parsed)) {
+            users = parsed;
+          }
+        }
+        const exists = users.some(
+          (u) => u && typeof u.email === 'string' && u.email.toLowerCase() === trimmedEmail,
+        );
+        if (!exists) {
+          users = [
+            {
+              id: data.user.id || Date.now().toString(),
+              email: data.user.email,
+              plan: 'free',
+              role: 'user',
+            },
+            ...users,
+          ];
+          localStorage.setItem('users', JSON.stringify(users));
+        }
+      } catch (err) {
+        console.error(err);
+      }
       if (typeof window !== 'undefined') {
         window.dispatchEvent(new Event('resumeai-auth-changed'));
       }
