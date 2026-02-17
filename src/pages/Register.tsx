@@ -72,6 +72,9 @@ export default function Register() {
       };
       localStorage.setItem('auth_token', data.token as string);
       localStorage.setItem('user', JSON.stringify(user));
+      if (typeof window !== 'undefined') {
+        window.dispatchEvent(new Event('resumeai-auth-changed'));
+      }
       navigate('/resume-editor', { replace: true });
     } catch (err) {
       console.error(err);

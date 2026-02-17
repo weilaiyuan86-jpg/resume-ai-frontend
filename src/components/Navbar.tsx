@@ -30,9 +30,8 @@ export default function Navbar() {
   const [showAITools, setShowAITools] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(() => {
     if (typeof window === 'undefined') return false;
-    const token = localStorage.getItem('auth_token');
     const rawUser = localStorage.getItem('user');
-    return !!token && !!rawUser;
+    return !!rawUser;
   });
   const [userRole, setUserRole] = useState<UserRole | null>(() => {
     if (typeof window === 'undefined') return null;
@@ -67,9 +66,8 @@ export default function Navbar() {
   useEffect(() => {
     const syncAuth = () => {
       if (typeof window === 'undefined') return;
-      const token = localStorage.getItem('auth_token');
       const raw = localStorage.getItem('user');
-      if (!token || !raw) {
+      if (!raw) {
         setUserRole(null);
         setIsLoggedIn(false);
         return;
@@ -80,7 +78,7 @@ export default function Navbar() {
         if (role === 'super_admin' || role === 'admin' || role === 'viewer' || role === 'user') {
           setUserRole(role);
         } else {
-          setUserRole(null);
+          setUserRole('user');
         }
         setIsLoggedIn(true);
       } catch {
@@ -89,8 +87,14 @@ export default function Navbar() {
       }
     };
     syncAuth();
-    window.addEventListener('storage', syncAuth);
-    return () => window.removeEventListener('storage', syncAuth);
+    const handleStorage = () => syncAuth();
+    const handleAuthChanged = () => syncAuth();
+    window.addEventListener('storage', handleStorage);
+    window.addEventListener('resumeai-auth-changed', handleAuthChanged as EventListener);
+    return () => {
+      window.removeEventListener('storage', handleStorage);
+      window.removeEventListener('resumeai-auth-changed', handleAuthChanged as EventListener);
+    };
   }, []);
 
   const isActive = (path: string) => {
@@ -107,6 +111,7 @@ export default function Navbar() {
     if (typeof window !== 'undefined') {
       localStorage.removeItem('auth_token');
       localStorage.removeItem('user');
+      window.dispatchEvent(new Event('resumeai-auth-changed'));
     }
     setIsLoggedIn(false);
     setUserRole(null);

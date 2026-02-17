@@ -97,6 +97,9 @@ export default function Login() {
       };
       localStorage.setItem('auth_token', data.token as string);
       localStorage.setItem('user', JSON.stringify(user));
+      if (typeof window !== 'undefined') {
+        window.dispatchEvent(new Event('resumeai-auth-changed'));
+      }
       if (from === '/admin') {
         navigate('/admin', { replace: true });
       } else {
