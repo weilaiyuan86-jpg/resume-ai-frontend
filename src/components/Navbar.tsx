@@ -205,27 +205,6 @@ export default function Navbar() {
           {/* CTA Buttons */}
           <div className="hidden lg:flex items-center gap-3">
             <ThemeToggle />
-            {userRole && (
-              <span
-                className={
-                  userRole === 'super_admin'
-                    ? 'px-2 py-1 rounded-full text-xs font-medium bg-purple-100 text-purple-700'
-                    : userRole === 'admin'
-                    ? 'px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-700'
-                    : userRole === 'viewer'
-                    ? 'px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-700'
-                    : 'px-2 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-700'
-                }
-              >
-                {userRole === 'super_admin'
-                  ? '超级管理员'
-                  : userRole === 'admin'
-                  ? '管理员'
-                  : userRole === 'viewer'
-                  ? '只读管理员'
-                  : '普通用户'}
-              </span>
-            )}
             {isLoggedIn ? (
               <>
                 {canAccessAdmin && (
@@ -322,18 +301,6 @@ export default function Navbar() {
             ))}
             
             <div className="pt-2 border-t border-border space-y-2">
-              {userRole && (
-                <div className="px-1 text-xs text-muted-foreground">
-                  当前权限：
-                  {userRole === 'super_admin'
-                    ? '超级管理员'
-                    : userRole === 'admin'
-                    ? '管理员'
-                    : userRole === 'viewer'
-                    ? '只读管理员'
-                    : '普通用户'}
-                </div>
-              )}
               {isLoggedIn ? (
                 <>
                   {canAccessAdmin && (
