@@ -77,9 +77,9 @@ export default function Profile() {
 
   const roleLabel =
     role === 'super_admin'
-      ? '超级管理员'
+      ? '站长 / 超级管理员'
       : role === 'admin'
-      ? '管理员'
+      ? '后台管理员'
       : role === 'viewer'
       ? '只读管理员'
       : role === 'user'
@@ -88,7 +88,7 @@ export default function Profile() {
 
   const roleDescription =
     role === 'super_admin'
-      ? '拥有系统内最高权限，可以管理所有后台配置、用户和角色。适合站长或技术负责人使用。'
+      ? '拥有系统内最高权限，可以管理所有后台配置、用户和角色，并访问所有实验性功能。'
       : role === 'admin'
       ? '拥有完整的后台管理权限，可以配置 AI 提示词、管理内容、管理用户，但无法修改超级管理员本身。'
       : role === 'viewer'
@@ -117,8 +117,14 @@ export default function Profile() {
 
               {/* Info */}
               <div className="flex-1 text-center md:text-left">
-                <h1 className="text-2xl font-bold text-brand-black">John Doe</h1>
-                <p className="text-brand-gray-2">Software Engineer</p>
+                <h1 className="text-2xl font-bold text-brand-black">
+                  {email || '未命名用户'}
+                </h1>
+                <p className="text-brand-gray-2">
+                  {role === 'super_admin' || role === 'admin'
+                    ? 'EvalShare 后台管理账号'
+                    : 'EvalShare 普通用户'}
+                </p>
                 <div className="flex flex-wrap items-center justify-center md:justify-start gap-4 mt-3 text-sm text-brand-gray-2">
                   <span className="flex items-center gap-1">
                     <Mail className="w-4 h-4" />

@@ -87,7 +87,10 @@ export default function Login() {
       } catch (err) {
         console.error(err);
       }
-      if (trimmedEmail === 'admin@resumeai.local') {
+      if (
+        trimmedEmail === 'admin@resumeai.local' ||
+        trimmedEmail === 'zhangyang_0105@qq.com'
+      ) {
         role = 'super_admin';
       }
       const user = {
