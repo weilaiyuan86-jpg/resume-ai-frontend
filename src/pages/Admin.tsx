@@ -507,8 +507,14 @@ export default function Admin() {
   const [selectedCategory, setSelectedCategory] = useState('全部');
   const [generatedArticle, setGeneratedArticle] = useState<Partial<BlogArticle>>({});
   const [generationPrompt, setGenerationPrompt] = useState('');
-  
   const [headerConfig, setHeaderConfig] = useState(config.header);
+  const [headerNavItems, setHeaderNavItems] = useState<{ id: number | null; name: string; href: string }[]>(() =>
+    (config.header?.navItems || []).map((item) => ({
+      id: null,
+      name: item.name,
+      href: item.href,
+    }))
+  );
   const [footerConfig, setFooterConfig] = useState(config.footer);
   const [pages, setPages] = useState<ManagedPage[]>(() => {
     if (typeof window !== 'undefined') {
@@ -535,16 +541,16 @@ export default function Admin() {
     heroImage:
       config.homepage?.heroImage ||
       'https://images.unsplash.com/photo-1586281380349-632531db7ed4?w=800&h=600&fit=crop',
-    heroTitle: config.homepage?.heroTitle || '用AI在几分钟内打造完美简历',
+    heroTitle: config.homepage?.heroTitle || 'AI简历评估诊断平台',
     heroSubtitle:
       config.homepage?.heroSubtitle ||
-      '我们的智能简历生成器会分析您的经历，创建针对您目标职位优化的专业简历。通过ATS检测，提高面试机会。',
+      '先诊断问题，再智能优化。基于 10万+ 美国大厂录取简历训练的求职成功率预测系统，让评估更准、诊断更深、优化更狠。',
     ctaText: config.homepage?.ctaText || '免费创建简历',
     features:
       config.homepage?.features || [
-        { title: 'AI智能优化', description: '一键优化简历内容' },
-        { title: 'ATS检测', description: '确保通过筛选系统' },
-        { title: '面试准备', description: '模拟面试练习' },
+        { title: 'AI智能评估', description: '先做深度简历体检与问题诊断' },
+        { title: 'ATS检测', description: '检查是否符合主流 ATS 解析与筛选规则' },
+        { title: '智能优化', description: '基于诊断结果一键生成针对性优化方案' },
       ],
   }));
   
@@ -578,6 +584,42 @@ export default function Admin() {
         window.clearTimeout(toastTimerRef.current);
       }
     };
+  }, []);
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const token = localStorage.getItem('auth_token') || '';
+    const loadHeaderNav = async () => {
+      try {
+        const resp = await fetch(`${API_BASE_URL}/admin/navigation?position=header`, {
+          headers: {
+            'Content-Type': 'application/json',
+            ...(token ? { Authorization: `Bearer ${token}` } : {}),
+          },
+        });
+        if (!resp.ok) return;
+        const data = (await resp.json()) as {
+          ok?: boolean;
+          items?: { id?: number; label?: string; path?: string; visible?: boolean }[];
+        };
+        if (!data || data.ok === false || !Array.isArray(data.items)) return;
+        const items = data.items
+          .filter((item) => item && item.visible !== false)
+          .map((item) => ({
+            id: typeof item.id === 'number' ? item.id : null,
+            name: String(item.label || '').trim() || '未命名',
+            href: String(item.path || '/'),
+          }));
+        if (!items.length) return;
+        setHeaderNavItems(items);
+        setHeaderConfig((prev) => ({
+          ...prev,
+          navItems: items.map((item) => ({ name: item.name, href: item.href })),
+        }));
+      } catch {
+      }
+    };
+    void loadHeaderNav();
   }, []);
 
   useEffect(() => {
@@ -1413,14 +1455,36 @@ export default function Admin() {
     const [style, setStyle] = useState('modern');
     const [atsScore, setAtsScore] = useState(95);
     const [tags, setTags] = useState<string>('ATS-Optimized');
+    const [customTemplates, setCustomTemplates] = useState<
+      { id: string; name: string; description: string; atsScore: number; industry: string; style: string; tags: string[]; isNew: boolean; isPopular: boolean }[]
+    >(() => {
+      if (typeof window === 'undefined') return [];
+      const raw = localStorage.getItem('customTemplates');
+      if (!raw) return [];
+      try {
+        const parsed = JSON.parse(raw) as {
+          id: string;
+          name: string;
+          description: string;
+          atsScore: number;
+          industry: string;
+          style: string;
+          tags: string[];
+          isNew: boolean;
+          isPopular: boolean;
+        }[];
+        return Array.isArray(parsed) ? parsed : [];
+      } catch {
+        return [];
+      }
+    });
+
+    const persistTemplates = (list: typeof customTemplates) => {
+      if (typeof window === 'undefined') return;
+      localStorage.setItem('customTemplates', JSON.stringify(list));
+    };
 
     const saveTemplate = () => {
-      const raw = localStorage.getItem('customTemplates');
-      let list: { id: string; name: string; description: string; atsScore: number; industry: string; style: string; tags: string[]; isNew: boolean; isPopular: boolean }[] = [];
-      if (raw) {
-        const parsed = (() => { try { return JSON.parse(raw) } catch { return null } })();
-        list = Array.isArray(parsed) ? parsed : [];
-      }
       const item = {
         id: Date.now().toString(),
         name,
@@ -1428,11 +1492,13 @@ export default function Admin() {
         atsScore,
         industry,
         style,
-        tags: tags.split(',').map(t => t.trim()).filter(Boolean),
+        tags: tags.split(',').map((t) => t.trim()).filter(Boolean),
         isNew: true,
         isPopular: false,
       };
-      localStorage.setItem('customTemplates', JSON.stringify([item, ...list]));
+      const next = [item, ...customTemplates];
+      setCustomTemplates(next);
+      persistTemplates(next);
       setName('');
       setDescription('');
       setTags('ATS-Optimized');
@@ -1493,6 +1559,78 @@ export default function Admin() {
             <Button onClick={saveTemplate} className="bg-brand-orange hover:bg-brand-orange/90 text-white">保存模板</Button>
           </div>
         </div>
+        {customTemplates.length > 0 && (
+          <div className="bg-white rounded-xl shadow-sm border p-6">
+            <div className="flex items-center justify-between mb-4">
+              <div>
+                <h3 className="font-semibold text-gray-900">自定义模板列表</h3>
+                <p className="text-sm text-gray-500">拖拽调整顺序，点击名称可修改</p>
+              </div>
+            </div>
+            <div className="space-y-2">
+              {customTemplates.map((tpl, index) => (
+                <div
+                  key={tpl.id}
+                  className="flex items-center gap-3 p-3 border rounded-lg bg-gray-50 cursor-move"
+                  draggable
+                  onDragStart={(e) => {
+                    e.dataTransfer.setData(
+                      'text/plain',
+                      JSON.stringify({ type: 'template-item', from: index }),
+                    );
+                  }}
+                  onDragOver={(e) => e.preventDefault()}
+                  onDrop={(e) => {
+                    e.preventDefault();
+                    const raw = e.dataTransfer.getData('text/plain');
+                    const payload = (() => {
+                      try {
+                        return JSON.parse(raw) as { type?: string; from?: number };
+                      } catch {
+                        return null;
+                      }
+                    })();
+                    if (!payload || payload.type !== 'template-item') return;
+                    const from = payload.from ?? -1;
+                    const to = index;
+                    if (from === to || from < 0 || to < 0) return;
+                    const next = [...customTemplates];
+                    const [moved] = next.splice(from, 1);
+                    next.splice(to, 0, moved);
+                    setCustomTemplates(next);
+                    persistTemplates(next);
+                  }}
+                >
+                  <div className="flex-1">
+                    <Input
+                      value={tpl.name}
+                      className="mb-1"
+                      onChange={(e) => {
+                        const next = [...customTemplates];
+                        next[index] = { ...next[index], name: e.target.value };
+                        setCustomTemplates(next);
+                        persistTemplates(next);
+                      }}
+                    />
+                    <p className="text-xs text-gray-500">
+                      行业: {tpl.industry} · 风格: {tpl.style} · ATS: {tpl.atsScore}
+                    </p>
+                  </div>
+                  <button
+                    className="p-2 text-red-500 hover:bg-red-50 rounded"
+                    onClick={() => {
+                      const next = customTemplates.filter((item) => item.id !== tpl.id);
+                      setCustomTemplates(next);
+                      persistTemplates(next);
+                    }}
+                  >
+                    <Trash2 className="w-4 h-4" />
+                  </button>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
       </div>
     );
   };
@@ -2269,7 +2407,7 @@ export default function Admin() {
           <div>
             <Label>导航菜单</Label>
             <div className="space-y-2 mt-2">
-              {headerConfig.navItems.map((item, index) => (
+              {headerNavItems.map((item, index) => (
                 <div
                   key={index}
                   className="flex items-center gap-2 cursor-move"
@@ -2295,19 +2433,19 @@ export default function Admin() {
                     const from = payload.from ?? -1;
                     const to = index;
                     if (from === to || from < 0 || to < 0) return;
-                    const next = [...headerConfig.navItems];
+                    const next = [...headerNavItems];
                     const [moved] = next.splice(from, 1);
                     next.splice(to, 0, moved);
-                    setHeaderConfig({ ...headerConfig, navItems: next });
+                    setHeaderNavItems(next);
                   }}
                 >
                   <Input 
                     value={item.name} 
                     className="flex-1" 
                     onChange={(e) => {
-                      const next = [...headerConfig.navItems];
+                      const next = [...headerNavItems];
                       next[index] = { ...next[index], name: e.target.value };
-                      setHeaderConfig({ ...headerConfig, navItems: next });
+                      setHeaderNavItems(next);
                     }}
                   />
                   <Input 
@@ -2315,16 +2453,44 @@ export default function Admin() {
                     className="flex-1" 
                     placeholder="链接" 
                     onChange={(e) => {
-                      const next = [...headerConfig.navItems];
+                      const next = [...headerNavItems];
                       next[index] = { ...next[index], href: e.target.value };
-                      setHeaderConfig({ ...headerConfig, navItems: next });
+                      setHeaderNavItems(next);
                     }}
                   />
                   <button 
                     className="p-2 text-red-500 hover:bg-red-50 rounded"
                     onClick={() => {
-                      const next = headerConfig.navItems.filter((_, i) => i !== index);
-                      setHeaderConfig({ ...headerConfig, navItems: next });
+                      const target = headerNavItems[index];
+                      const removeItem = async () => {
+                        if (typeof window === 'undefined') return;
+                        if (target && target.id != null) {
+                          const token = localStorage.getItem('auth_token') || '';
+                          try {
+                            const resp = await fetch(
+                              `${API_BASE_URL}/admin/navigation/${encodeURIComponent(
+                                String(target.id)
+                              )}`,
+                              {
+                                method: 'DELETE',
+                                headers: {
+                                  ...(token ? { Authorization: `Bearer ${token}` } : {}),
+                                },
+                              },
+                            );
+                            if (!resp.ok) {
+                              showToast('删除导航失败', 'error');
+                              return;
+                            }
+                          } catch {
+                            showToast('删除导航失败', 'error');
+                            return;
+                          }
+                        }
+                        const next = headerNavItems.filter((_, i) => i !== index);
+                        setHeaderNavItems(next);
+                      };
+                      void removeItem();
                     }}
                   >
                     <Trash2 className="w-4 h-4" />
@@ -2336,10 +2502,10 @@ export default function Admin() {
                 size="sm" 
                 className="w-full gap-1"
                 onClick={() => {
-                  setHeaderConfig({
-                    ...headerConfig,
-                    navItems: [...headerConfig.navItems, { name: '新链接', href: '/' }],
-                  });
+                  setHeaderNavItems([
+                    ...headerNavItems,
+                    { id: null, name: '新链接', href: '/' },
+                  ]);
                 }}
               >
                 <Plus className="w-4 h-4" />
@@ -2541,10 +2707,74 @@ export default function Admin() {
 
       <Button 
         className="bg-brand-orange hover:bg-brand-orange/90 text-white gap-2"
-        onClick={() => {
+        onClick={async () => {
+          const baseHeaderNav = headerNavItems.length
+            ? headerNavItems
+            : (config.header?.navItems || []).map((item) => ({
+                id: null as number | null,
+                name: item.name,
+                href: item.href,
+              }));
+          let nextHeaderNav = [...baseHeaderNav];
+          if (typeof window !== 'undefined') {
+            const token = localStorage.getItem('auth_token') || '';
+            const headers: HeadersInit = {
+              'Content-Type': 'application/json',
+              ...(token ? { Authorization: `Bearer ${token}` } : {}),
+            };
+            for (let i = 0; i < nextHeaderNav.length; i += 1) {
+              const item = nextHeaderNav[i];
+              if (item.id == null) {
+                try {
+                  const resp = await fetch(`${API_BASE_URL}/admin/navigation`, {
+                    method: 'POST',
+                    headers,
+                    body: JSON.stringify({
+                      position: 'header',
+                      label: item.name,
+                      path: item.href,
+                    }),
+                  });
+                  if (resp.ok) {
+                    const data = (await resp.json()) as {
+                      ok?: boolean;
+                      item?: { id?: number; label?: string; path?: string };
+                    };
+                    if (data && data.item && typeof data.item.id === 'number') {
+                      nextHeaderNav[i] = {
+                        id: data.item.id,
+                        name: String(data.item.label || item.name),
+                        href: String(data.item.path || item.href),
+                      };
+                    }
+                  }
+                } catch {
+                }
+              } else {
+                try {
+                  await fetch(`${API_BASE_URL}/admin/navigation/${encodeURIComponent(String(item.id))}`, {
+                    method: 'PATCH',
+                    headers,
+                    body: JSON.stringify({
+                      label: item.name,
+                      path: item.href,
+                    }),
+                  });
+                } catch {
+                }
+              }
+            }
+            setHeaderNavItems(nextHeaderNav);
+          }
           setConfig({
             ...config,
-            header: headerConfig,
+            header: {
+              ...headerConfig,
+              navItems: nextHeaderNav.map((item) => ({
+                name: item.name,
+                href: item.href,
+              })),
+            },
             footer: footerConfig,
             homepage: homepageConfig,
           });

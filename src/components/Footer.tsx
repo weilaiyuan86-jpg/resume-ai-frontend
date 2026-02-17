@@ -101,7 +101,7 @@ export default function Footer() {
               </span>
             </Link>
             <p className="text-gray-400 text-sm leading-relaxed mb-6 max-w-xs">
-              用AI驱动的简历构建工具，打造专业简历，成就事业。让求职申请变得轻松高效。
+              AI简历评估诊断平台：先诊断问题，再智能优化。基于 10万+ 美国大厂录取简历样本，预测求职成功率，让每一次投递更有把握。
             </p>
             
             {/* Newsletter */}

@@ -18,10 +18,10 @@ export default function Hero() {
   const homepage = config.homepage;
 
   const heroTitle =
-    homepage?.heroTitle || '用AI在几分钟内打造完美简历';
+    homepage?.heroTitle || 'AI简历评估诊断平台';
   const heroSubtitle =
     homepage?.heroSubtitle ||
-    '我们的智能简历生成器会分析您的经历，创建针对您目标职位优化的专业简历。通过ATS检测，提高面试机会。';
+    '先诊断问题，再智能优化。基于 10万+ 美国大厂录取简历训练的求职成功率预测系统，让评估更准、诊断更深、优化更狠。';
   const heroCtaText = homepage?.ctaText || '免费创建简历';
   const heroImage =
     homepage?.heroImage ||
@@ -110,7 +110,7 @@ export default function Hero() {
               className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-brand-orange/10 text-brand-orange text-sm font-medium mb-6"
             >
               <Star className="w-4 h-4" />
-              <span>AI驱动简历构建工具</span>
+              <span>AI简历评估诊断平台</span>
             </div>
 
             <h1
@@ -219,8 +219,8 @@ export default function Hero() {
               {/* Stats Card */}
               <div className="absolute -top-4 -right-4 bg-white rounded-xl shadow-card p-4 animate-float-slow">
                 <div className="text-center">
-                  <p className="text-2xl font-bold text-brand-orange">50K+</p>
-                  <p className="text-xs text-brand-gray-2">成功求职</p>
+                  <p className="text-2xl font-bold text-brand-orange">100K+</p>
+                  <p className="text-xs text-brand-gray-2">大厂录取简历样本</p>
                 </div>
               </div>
             </div>

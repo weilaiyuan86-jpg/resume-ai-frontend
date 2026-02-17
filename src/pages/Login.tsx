@@ -278,17 +278,17 @@ export default function Login() {
             {/* Right Side - Benefits */}
             <div className="hidden lg:block">
               <h2 className="text-3xl font-bold text-brand-black mb-6">
-                加入数万成功求职者的行列
+                加入AI简历评估诊断平台
               </h2>
               <div className="space-y-6">
                 {[
                   {
-                    title: 'AI驱动的简历优化',
-                    description: '智能分析您的经历，提供个性化的改进建议',
+                    title: '先诊断，再优化',
+                    description: '先做深度评估诊断，再给出针对性的简历优化建议',
                   },
                   {
                     title: 'ATS兼容性检测',
-                    description: '确保您的简历能够通过求职者追踪系统',
+                    description: '检查简历是否能被求职者追踪系统正确解析和打分',
                   },
                   {
                     title: '专业模板库',
@@ -314,8 +314,8 @@ export default function Login() {
               {/* Stats */}
               <div className="grid grid-cols-3 gap-6 mt-12 pt-12 border-t border-brand-gray-3">
                 <div>
-                  <p className="text-3xl font-bold text-brand-orange">50K+</p>
-                  <p className="text-sm text-brand-gray-2">成功求职</p>
+                  <p className="text-3xl font-bold text-brand-orange">100K+</p>
+                  <p className="text-sm text-brand-gray-2">大厂录取简历样本</p>
                 </div>
                 <div>
                   <p className="text-3xl font-bold text-brand-orange">4.9</p>

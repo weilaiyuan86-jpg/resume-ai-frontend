@@ -1246,7 +1246,7 @@ export default function ATSChecker() {
                   className="bg-primary hover:bg-primary/90 text-white shadow-lg shadow-primary/30 gap-2 rounded-full px-8"
                 >
                   <Zap className="w-5 h-5" />
-                  使用AI优化简历
+                  先评估诊断，再智能优化
                 </Button>
                 <Button
                   variant="outline"
@@ -1254,7 +1254,7 @@ export default function ATSChecker() {
                   className="gap-2"
                 >
                   <Download className="w-5 h-5" />
-                  下载分析报告
+                  下载详细评估报告
                 </Button>
               </div>
             </div>

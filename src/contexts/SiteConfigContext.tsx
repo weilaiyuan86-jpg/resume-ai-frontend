@@ -12,14 +12,14 @@ const STORAGE_KEY = 'siteConfig'
 const defaultHomepage: HomepageConfig = {
   heroImage:
     'https://images.unsplash.com/photo-1586281380349-632531db7ed4?w=800&h=600&fit=crop',
-  heroTitle: '用AI在几分钟内打造完美简历',
+  heroTitle: 'AI简历评估诊断平台',
   heroSubtitle:
-    '我们的智能简历生成器会分析您的经历，创建针对您目标职位优化的专业简历。通过ATS检测，提高面试机会。',
+    '先诊断问题，再智能优化。基于 10万+ 美国大厂录取简历训练的求职成功率预测系统，让评估更准、诊断更深、优化更狠。',
   ctaText: '免费创建简历',
   features: [
-    { title: 'AI智能优化', description: '一键优化简历内容' },
-    { title: 'ATS检测', description: '确保通过筛选系统' },
-    { title: '面试准备', description: '模拟面试练习' },
+    { title: 'AI智能评估', description: '先做深度简历体检与问题诊断' },
+    { title: 'ATS检测', description: '检查是否符合主流 ATS 解析与筛选规则' },
+    { title: '智能优化', description: '基于诊断结果一键生成针对性优化方案' },
   ],
 }
 

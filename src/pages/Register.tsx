@@ -260,17 +260,17 @@ export default function Register() {
             {/* Right Side - Benefits */}
             <div className="hidden lg:block">
               <h2 className="text-3xl font-bold text-foreground mb-6">
-                免费开始，无需信用卡
+                免费开始体验AI简历评估诊断
               </h2>
               <div className="space-y-6">
                 {[
                   {
                     title: '免费创建3份简历',
-                    description: '基础版完全免费，满足您的基本需求',
+                    description: '基础版完全免费，适合先做评估诊断再逐步优化',
                   },
                   {
                     title: 'ATS兼容性检测',
-                    description: '确保您的简历能够通过求职者追踪系统',
+                    description: '检测简历是否符合主流 ATS 解析与筛选规则',
                   },
                   {
                     title: '专业模板库',
@@ -278,7 +278,7 @@ export default function Register() {
                   },
                   {
                     title: 'AI内容建议',
-                    description: '获得智能的简历优化建议（专业版）',
+                    description: '基于诊断结果生成更「狠」的针对性优化建议（专业版）',
                   },
                 ].map((benefit, index) => (
                   <div key={index} className="flex items-start gap-4">
