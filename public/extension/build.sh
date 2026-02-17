@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# ResumeAI Chrome 扩展打包脚本
+# EvalShare Helper Chrome 扩展打包脚本
 #
 # 环境变量（可选）：
 #   ICON16_URL, ICON48_URL, ICON128_URL  指定图标URL，自动下载并生成对应尺寸PNG
@@ -49,5 +49,7 @@ for f in manifest.json content.js background.js popup.html popup.js icon-16.png 
 done
 
 echo "[3/3] 创建压缩包..."
-zip -r -q resumeai-extension.zip manifest.json content.js background.js popup.html popup.js icon-16.png icon-48.png icon-128.png config.json
-echo "✅ 完成: $(pwd)/resumeai-extension.zip"
+ZIP_NAME="evalshare-helper-extension.zip"
+rm -f "$ZIP_NAME"
+zip -r -q "$ZIP_NAME" manifest.json content.js background.js popup.html popup.js icon-16.png icon-48.png icon-128.png config.json
+echo "✅ 完成: $(pwd)/$ZIP_NAME"

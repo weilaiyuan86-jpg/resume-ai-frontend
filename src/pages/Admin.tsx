@@ -22,6 +22,8 @@ import gsap from 'gsap';
 import { useSiteConfig } from '@/hooks/useSiteConfig';
 import { useLocation } from 'react-router-dom';
 
+const API_BASE_URL = '/api';
+
 const sidebarItems = [
   { id: 'dashboard', name: '仪表盘', icon: LayoutDashboard },
   { id: 'users', name: '用户管理', icon: Users },
@@ -552,8 +554,31 @@ export default function Admin() {
     fontFamily: 'Inter',
     borderRadius: '0.625rem',
   });
-  
+
+  const [toast, setToast] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
+  const toastTimerRef = useRef<number | null>(null);
+
+  const showToast = (message: string, type: 'success' | 'error' = 'success') => {
+    if (typeof window === 'undefined') return;
+    if (toastTimerRef.current) {
+      window.clearTimeout(toastTimerRef.current);
+    }
+    setToast({ type, message });
+    toastTimerRef.current = window.setTimeout(() => {
+      setToast(null);
+      toastTimerRef.current = null;
+    }, 2400);
+  };
+
   const contentRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    return () => {
+      if (toastTimerRef.current) {
+        window.clearTimeout(toastTimerRef.current);
+      }
+    };
+  }, []);
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -604,6 +629,7 @@ export default function Admin() {
   const handleSavePrompts = () => {
     localStorage.setItem('aiPrompts', JSON.stringify(prompts));
     setHasChanges(false);
+    showToast('AI 提示词已保存');
   };
 
   useEffect(() => {
@@ -654,7 +680,8 @@ export default function Admin() {
       ? (providerLabelMap[activeProviderId] || activeProviderId)
       : '未配置';
     const enabledFeaturesCount = (() => {
-      const feats = config.features || {};
+      const feats = (config.features ||
+        {}) as Partial<NonNullable<import('@/contexts/site-config-base').SiteConfig['features']>>;
       return Object.values(feats).filter(Boolean).length;
     })();
 
@@ -732,8 +759,8 @@ export default function Admin() {
           {stats.map((stat, index) => (
             <div key={index} className="bg-white rounded-xl p-6 shadow-sm border">
               <div className="flex items-center justify-between mb-4">
-                <div className="w-12 h-12 rounded-xl bg-blue-50 flex items-center justify-center">
-                  <stat.icon className="w-6 h-6 text-blue-600" />
+                <div className="w-12 h-12 rounded-xl bg-brand-orange/10 flex items-center justify-center">
+                  <stat.icon className="w-6 h-6 text-brand-orange" />
                 </div>
                 <span
                   className={`text-xs font-medium ${
@@ -758,7 +785,7 @@ export default function Admin() {
                 className="flex items-start justify-between py-3 border-b last:border-0"
               >
                 <div className="flex items-start gap-3">
-                  <div className="w-2 h-2 mt-2 rounded-full bg-blue-500" />
+                  <div className="w-2 h-2 mt-2 rounded-full bg-brand-orange" />
                   <div>
                     <p className="font-medium text-gray-900">{item.title}</p>
                     <p className="text-sm text-gray-500 mt-1">{item.detail}</p>
@@ -779,7 +806,7 @@ export default function Admin() {
           <h2 className="text-xl font-bold text-gray-900">支付接口配置</h2>
           <p className="text-sm text-gray-500">配置多种支付方式，支持全球用户</p>
         </div>
-        <Button className="bg-blue-600 hover:bg-blue-700 text-white gap-2">
+        <Button className="bg-brand-orange hover:bg-brand-orange/90 text-white gap-2">
           <Plus className="w-4 h-4" />
           添加支付方式
         </Button>
@@ -991,10 +1018,10 @@ export default function Admin() {
       </div>
 
       {/* Setup Guide */}
-      <div className="bg-blue-50 rounded-xl p-6 border border-blue-100">
+      <div className="bg-brand-orange/5 rounded-xl p-6 border border-brand-orange/20">
         <div className="flex items-start gap-4">
-          <div className="w-10 h-10 rounded-lg bg-blue-100 flex items-center justify-center">
-            <BookOpen className="w-5 h-5 text-blue-600" />
+          <div className="w-10 h-10 rounded-lg bg-brand-orange/10 flex items-center justify-center">
+            <BookOpen className="w-5 h-5 text-brand-orange" />
           </div>
           <div>
             <h3 className="font-semibold text-gray-900 mb-2">配置教程</h3>
@@ -1011,7 +1038,7 @@ export default function Admin() {
                 <a
                   key={guide.name}
                   href={guide.url}
-                  className="flex items-center gap-2 text-sm text-blue-600 hover:text-blue-700"
+                  className="flex items-center gap-2 text-sm text-brand-orange hover:text-brand-orange/90"
                 >
                   <ExternalLink className="w-4 h-4" />
                   {guide.name}
@@ -1057,7 +1084,7 @@ export default function Admin() {
               <Switch id="sandbox" />
               <Label htmlFor="sandbox">启用测试模式 (Sandbox)</Label>
             </div>
-            <Button className="w-full bg-blue-600 hover:bg-blue-700 text-white">
+            <Button className="w-full bg-brand-orange hover:bg-brand-orange/90 text-white">
               <Save className="w-4 h-4 mr-2" />
               保存配置
             </Button>
@@ -1076,39 +1103,76 @@ export default function Admin() {
       plan: string;
       role?: 'super_admin' | 'admin' | 'viewer' | 'user';
       fullName?: string;
-    }[]>(() => {
-      if (typeof window !== 'undefined') {
-        const raw = localStorage.getItem('users');
-        if (!raw) return [];
-        const parsed = (() => {
-          try {
-            return JSON.parse(raw);
-          } catch {
-            return null;
-          }
-        })();
-        if (!Array.isArray(parsed)) return [];
-        return parsed.map((u) => {
-          if (!u || typeof u !== 'object') return u;
-          const base = {
-            id: (u as any).id || Date.now().toString(),
-            email: (u as any).email || '',
-            plan: (u as any).plan || 'free',
-            fullName: (u as any).fullName,
-          };
-          if (!('role' in u)) {
-            return { ...base, role: 'user' as const };
-          }
-          return { ...base, role: (u as any).role };
-        });
-      }
-      return [];
-    });
+    }[]>([]);
+    const [resetPasswords, setResetPasswords] = useState<Record<string, string>>({});
 
-    const saveUsers = (list: typeof usersList) => {
-      setUsersList(list);
-      localStorage.setItem('users', JSON.stringify(list));
+    const saveUsersToLocal = (list: typeof usersList) => {
+      if (typeof window !== 'undefined') {
+        localStorage.setItem('users', JSON.stringify(list));
+      }
     };
+
+    const loadUsers = async () => {
+      if (typeof window === 'undefined') return;
+      const token = localStorage.getItem('auth_token') || '';
+      try {
+        const resp = await fetch(`${API_BASE_URL}/admin/users`, {
+          headers: {
+            'Content-Type': 'application/json',
+            ...(token ? { Authorization: `Bearer ${token}` } : {}),
+          },
+        });
+        if (resp.ok) {
+          const data = (await resp.json()) as {
+            id: string;
+            email: string;
+            plan?: string;
+            role?: 'super_admin' | 'admin' | 'viewer' | 'user';
+            fullName?: string;
+          }[];
+          const list = Array.isArray(data)
+            ? data.map((u) => ({
+                id: u.id,
+                email: u.email,
+                plan: u.plan || 'free',
+                role: u.role || 'user',
+                fullName: u.fullName,
+              }))
+            : [];
+          setUsersList(list);
+          setResetPasswords({});
+          saveUsersToLocal(list);
+        } else {
+          const raw = localStorage.getItem('users');
+          if (raw) {
+            try {
+              const parsed = JSON.parse(raw) as typeof usersList;
+              if (Array.isArray(parsed)) {
+                setUsersList(parsed);
+              }
+            } catch {
+              setUsersList([]);
+            }
+          }
+        }
+      } catch (e) {
+        const raw = localStorage.getItem('users');
+        if (raw) {
+          try {
+            const parsed = JSON.parse(raw) as typeof usersList;
+            if (Array.isArray(parsed)) {
+              setUsersList(parsed);
+            }
+          } catch {
+            setUsersList([]);
+          }
+        }
+      }
+    };
+
+    useEffect(() => {
+      void loadUsers();
+    }, []);
 
     const getCurrentUserRole = () => {
       if (typeof window === 'undefined') return null as 'super_admin' | 'admin' | 'viewer' | 'user' | null;
@@ -1129,55 +1193,97 @@ export default function Admin() {
     const currentUserRole = getCurrentUserRole();
     const canEditRoles = currentUserRole === 'super_admin' || currentUserRole === 'admin';
 
-    const addUser = () => {
+    const addUser = async () => {
       if (!email.trim()) return;
-      const next = [
-        {
-          id: Date.now().toString(),
-          email: email.trim(),
-          plan,
-          role: 'user' as const,
-        },
-        ...usersList,
-      ];
-      saveUsers(next);
-      setEmail('');
-      setPlan('free');
-    };
-
-    const removeUser = (id: string) => {
-      const next = usersList.filter(u => u.id !== id);
-      saveUsers(next);
-    };
-
-    const updateRole = (id: string, role: 'super_admin' | 'admin' | 'viewer' | 'user') => {
-      const next = usersList.map(user => {
-        if (user.id !== id) return user;
-        return { ...user, role };
-      });
-      saveUsers(next);
-
-      if (typeof window !== 'undefined') {
-        const raw = localStorage.getItem('user');
-        if (raw) {
-          try {
-            const parsed = JSON.parse(raw) as { email?: string; role?: string } | null;
-            if (parsed && typeof parsed.email === 'string') {
-              const current = next.find(u => u.email === parsed.email);
-              if (current) {
-                localStorage.setItem(
-                  'user',
-                  JSON.stringify({
-                    email: current.email,
-                    role: current.role || 'user',
-                  })
-                );
-              }
-            }
-          } catch (e) {
-            console.error(e);
-          }
+      if (typeof window === 'undefined') return;
+      const token = localStorage.getItem('auth_token') || '';
+      try {
+        const resp = await fetch(`${API_BASE_URL}/admin/users`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            ...(token ? { Authorization: `Bearer ${token}` } : {}),
+          },
+          body: JSON.stringify({
+            email: email.trim(),
+            plan,
+          }),
+        });
+        if (!resp.ok) {
+          return;
         }
+        await loadUsers();
+        setEmail('');
+        setPlan('free');
+        showToast('用户已添加');
+      } catch (e) {
+      }
+    };
+
+    const removeUser = async (id: string) => {
+      if (typeof window === 'undefined') return;
+      const token = localStorage.getItem('auth_token') || '';
+      try {
+        const resp = await fetch(`${API_BASE_URL}/admin/users/${encodeURIComponent(id)}`, {
+          method: 'DELETE',
+          headers: {
+            ...(token ? { Authorization: `Bearer ${token}` } : {}),
+          },
+        });
+        if (!resp.ok) {
+          return;
+        }
+        await loadUsers();
+        showToast('用户已删除');
+      } catch (e) {
+      }
+    };
+
+    const updateRole = async (id: string, role: 'super_admin' | 'admin' | 'viewer' | 'user') => {
+      if (typeof window === 'undefined') return;
+      const token = localStorage.getItem('auth_token') || '';
+      try {
+        const resp = await fetch(`${API_BASE_URL}/admin/users/${encodeURIComponent(id)}`, {
+          method: 'PATCH',
+          headers: {
+            'Content-Type': 'application/json',
+            ...(token ? { Authorization: `Bearer ${token}` } : {}),
+          },
+          body: JSON.stringify({ role }),
+        });
+        if (!resp.ok) {
+          return;
+        }
+        await loadUsers();
+        showToast('用户权限已更新');
+      } catch (e) {
+      }
+    };
+
+    const updatePassword = async (id: string) => {
+      if (typeof window === 'undefined') return;
+      const nextPassword = resetPasswords[id]?.trim();
+      if (!nextPassword) return;
+      const token = localStorage.getItem('auth_token') || '';
+      try {
+        const resp = await fetch(`${API_BASE_URL}/admin/users/${encodeURIComponent(id)}`, {
+          method: 'PATCH',
+          headers: {
+            'Content-Type': 'application/json',
+            ...(token ? { Authorization: `Bearer ${token}` } : {}),
+          },
+          body: JSON.stringify({ password: nextPassword }),
+        });
+        if (!resp.ok) {
+          return;
+        }
+        setResetPasswords((prev) => {
+          const clone = { ...prev };
+          delete clone[id];
+          return clone;
+        });
+        showToast('用户密码已重置');
+      } catch (e) {
       }
     };
 
@@ -1203,7 +1309,7 @@ export default function Admin() {
             </Select>
           </div>
           <div className="col-span-3 flex justify-end">
-            <Button onClick={addUser} className="bg-blue-600 hover:bg-blue-700 text-white">添加用户</Button>
+            <Button onClick={addUser} className="bg-brand-orange hover:bg-brand-orange/90 text-white">添加用户</Button>
           </div>
         </div>
         <div className="bg-white rounded-xl shadow-sm border overflow-hidden">
@@ -1214,6 +1320,7 @@ export default function Admin() {
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">姓名</th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">套餐</th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">角色</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">密码</th>
                 <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">操作</th>
               </tr>
             </thead>
@@ -1247,6 +1354,32 @@ export default function Admin() {
                         )}
                       </SelectContent>
                     </Select>
+                  </td>
+                  <td className="px-6 py-3 text-sm">
+                    <div className="flex items-center gap-2">
+                      <Input
+                        type="password"
+                        placeholder="输入新密码"
+                        className="h-8"
+                        value={resetPasswords[user.id] ?? ''}
+                        onChange={(e) =>
+                          setResetPasswords((prev) => ({
+                            ...prev,
+                            [user.id]: e.target.value,
+                          }))
+                        }
+                        disabled={!canEditRoles}
+                      />
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="h-8"
+                        onClick={() => updatePassword(user.id)}
+                        disabled={!canEditRoles || !(resetPasswords[user.id] ?? '').trim()}
+                      >
+                        设置
+                      </Button>
+                    </div>
                   </td>
                   <td className="px-6 py-3 text-right">
                     <div className="flex items-center justify-end gap-2">
@@ -1299,6 +1432,7 @@ export default function Admin() {
       setName('');
       setDescription('');
       setTags('ATS-Optimized');
+      showToast('模板已保存');
     };
 
     return (
@@ -1352,14 +1486,14 @@ export default function Admin() {
             <Input value={tags} onChange={(e) => setTags(e.target.value)} className="mt-1" />
           </div>
           <div className="col-span-2 flex justify-end">
-            <Button onClick={saveTemplate} className="bg-blue-600 hover:bg-blue-700 text-white">保存模板</Button>
+            <Button onClick={saveTemplate} className="bg-brand-orange hover:bg-brand-orange/90 text-white">保存模板</Button>
           </div>
         </div>
       </div>
     );
   };
 
-  const [analyticsConfig, setAnalyticsConfig] = useState(() => {
+  const [adminAnalyticsConfig, setAdminAnalyticsConfig] = useState(() => {
     if (typeof window !== 'undefined') {
       const raw = localStorage.getItem('adminAnalyticsConfig');
       if (raw) {
@@ -1385,8 +1519,8 @@ export default function Admin() {
     return { showUsers: true, showTemplates: true, showArticles: true };
   });
   useEffect(() => {
-    localStorage.setItem('adminAnalyticsConfig', JSON.stringify(analyticsConfig));
-  }, [analyticsConfig]);
+    localStorage.setItem('adminAnalyticsConfig', JSON.stringify(adminAnalyticsConfig));
+  }, [adminAnalyticsConfig]);
   const renderAnalytics = () => {
     const usersCount = (() => {
       const raw = localStorage.getItem('users') || '[]';
@@ -1401,9 +1535,9 @@ export default function Admin() {
     const articlesCount = articles.length;
     const trend = [12, 16, 14, 18, 22, 20, 25];
     const metrics = [
-      analyticsConfig.showUsers && { label: '用户总数', value: usersCount },
-      analyticsConfig.showTemplates && { label: '自定义模板', value: templatesCount },
-      analyticsConfig.showArticles && { label: '文章数量', value: articlesCount },
+      adminAnalyticsConfig.showUsers && { label: '用户总数', value: usersCount },
+      adminAnalyticsConfig.showTemplates && { label: '自定义模板', value: templatesCount },
+      adminAnalyticsConfig.showArticles && { label: '文章数量', value: articlesCount },
     ].filter(Boolean) as { label: string; value: number }[];
     return (
       <div className="space-y-6">
@@ -1417,27 +1551,27 @@ export default function Admin() {
             <div className="flex items-center gap-2">
               <span>用户</span>
               <Switch
-                checked={analyticsConfig.showUsers}
+                checked={adminAnalyticsConfig.showUsers}
                 onCheckedChange={checked =>
-                  setAnalyticsConfig(prev => ({ ...prev, showUsers: checked }))
+                  setAdminAnalyticsConfig(prev => ({ ...prev, showUsers: checked }))
                 }
               />
             </div>
             <div className="flex items-center gap-2">
               <span>模板</span>
               <Switch
-                checked={analyticsConfig.showTemplates}
+                checked={adminAnalyticsConfig.showTemplates}
                 onCheckedChange={checked =>
-                  setAnalyticsConfig(prev => ({ ...prev, showTemplates: checked }))
+                  setAdminAnalyticsConfig(prev => ({ ...prev, showTemplates: checked }))
                 }
               />
             </div>
             <div className="flex items-center gap-2">
               <span>文章</span>
               <Switch
-                checked={analyticsConfig.showArticles}
+                checked={adminAnalyticsConfig.showArticles}
                 onCheckedChange={checked =>
-                  setAnalyticsConfig(prev => ({ ...prev, showArticles: checked }))
+                  setAdminAnalyticsConfig(prev => ({ ...prev, showArticles: checked }))
                 }
               />
             </div>
@@ -1513,7 +1647,7 @@ export default function Admin() {
         {hasChanges && (
           <Button 
             onClick={handleSavePrompts}
-            className="bg-blue-600 hover:bg-blue-700 text-white gap-2"
+            className="bg-brand-orange hover:bg-brand-orange/90 text-white gap-2"
           >
             <Save className="w-4 h-4" />
             保存更改
@@ -1538,7 +1672,7 @@ export default function Admin() {
             <div className="bg-white rounded-xl shadow-sm border p-6">
               <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center gap-2">
-                  <Sparkles className="w-5 h-5 text-blue-600" />
+                  <Sparkles className="w-5 h-5 text-brand-orange" />
                   <h3 className="font-semibold text-gray-900">
                     {key === 'resume_polish' && '简历润色提示词'}
                     {key === 'cover_letter' && '求职信生成提示词'}
@@ -1577,7 +1711,7 @@ export default function Admin() {
       {/* AI Model Settings */}
       <div className="bg-white rounded-xl shadow-sm border p-6">
         <h3 className="font-semibold text-gray-900 mb-4 flex items-center gap-2">
-          <Code className="w-5 h-5 text-blue-600" />
+          <Code className="w-5 h-5 text-brand-orange" />
           AI 模型设置
         </h3>
         <div className="grid grid-cols-2 gap-4">
@@ -1628,7 +1762,7 @@ export default function Admin() {
       {/* Cleaning API Settings */}
       <div className="bg-white rounded-xl shadow-sm border p-6">
         <h3 className="font-semibold text-gray-900 mb-4 flex items-center gap-2">
-          <Sparkles className="w-5 h-5 text-blue-600" />
+          <Sparkles className="w-5 h-5 text-brand-orange" />
           清洗 API 接入
         </h3>
         <div className="grid grid-cols-2 gap-4">
@@ -1659,7 +1793,7 @@ export default function Admin() {
 
       <div className="bg-white rounded-xl shadow-sm border p-6">
         <h3 className="font-semibold text-gray-900 mb-4 flex items-center gap-2">
-          <Sparkles className="w-5 h-5 text-blue-600" />
+          <Sparkles className="w-5 h-5 text-brand-orange" />
           ATS 检测 API 接入
         </h3>
         <div className="grid grid-cols-2 gap-4">
@@ -1690,7 +1824,7 @@ export default function Admin() {
 
       <div className="bg-white rounded-xl shadow-sm border p-6">
         <h3 className="font-semibold text-gray-900 mb-4 flex items-center gap-2">
-          <Sparkles className="w-5 h-5 text-blue-600" />
+          <Sparkles className="w-5 h-5 text-brand-orange" />
           面试报告 API 接入
         </h3>
         <div className="grid grid-cols-2 gap-4">
@@ -1721,7 +1855,7 @@ export default function Admin() {
 
       <div className="bg-white rounded-xl shadow-sm border p-6">
         <h3 className="font-semibold text-gray-900 mb-4 flex items-center gap-2">
-          <Sparkles className="w-5 h-5 text-blue-600" />
+          <Sparkles className="w-5 h-5 text-brand-orange" />
           SEO 文章 API 接入
         </h3>
         <div className="grid grid-cols-2 gap-4">
@@ -1753,7 +1887,7 @@ export default function Admin() {
       {/* Chrome 扩展配置 */}
       <div className="bg-white rounded-xl shadow-sm border p-6">
         <h3 className="font-semibold text-gray-900 mb-4 flex items-center gap-2">
-          <Chrome className="w-5 h-5 text-blue-600" />
+          <Chrome className="w-5 h-5 text-brand-orange" />
           Chrome 扩展配置
         </h3>
         <div className="grid grid-cols-2 gap-4">
@@ -1864,7 +1998,7 @@ export default function Admin() {
               </Button>
               <Button
                 disabled={isBuildingExt}
-                className="bg-blue-600 hover:bg-blue-700 text-white"
+                className="bg-brand-orange hover:bg-brand-orange/90 text-white"
                 onClick={async () => {
                   if (isBuildingExt) return;
                   setIsBuildingExt(true);
@@ -1915,7 +2049,7 @@ export default function Admin() {
       {/* Theme Colors */}
       <div className="bg-white rounded-xl shadow-sm border p-6">
         <h3 className="font-semibold text-gray-900 mb-4 flex items-center gap-2">
-          <Paintbrush className="w-5 h-5 text-blue-600" />
+          <Paintbrush className="w-5 h-5 text-brand-orange" />
           主题颜色
         </h3>
         <div className="grid grid-cols-2 gap-4">
@@ -1993,7 +2127,7 @@ export default function Admin() {
       {/* Homepage Config */}
       <div className="bg-white rounded-xl shadow-sm border p-6">
         <h3 className="font-semibold text-gray-900 mb-4 flex items-center gap-2">
-          <Image className="w-5 h-5 text-blue-600" />
+          <Image className="w-5 h-5 text-brand-orange" />
           首页配置
         </h3>
         <div className="space-y-6">
@@ -2116,7 +2250,7 @@ export default function Admin() {
       {/* Header Config */}
       <div className="bg-white rounded-xl shadow-sm border p-6">
         <h3 className="font-semibold text-gray-900 mb-4 flex items-center gap-2">
-          <Globe className="w-5 h-5 text-blue-600" />
+          <Globe className="w-5 h-5 text-brand-orange" />
           页眉配置
         </h3>
         <div className="space-y-4">
@@ -2132,7 +2266,37 @@ export default function Admin() {
             <Label>导航菜单</Label>
             <div className="space-y-2 mt-2">
               {headerConfig.navItems.map((item, index) => (
-                <div key={index} className="flex items-center gap-2">
+                <div
+                  key={index}
+                  className="flex items-center gap-2 cursor-move"
+                  draggable
+                  onDragStart={(e) => {
+                    e.dataTransfer.setData(
+                      'text/plain',
+                      JSON.stringify({ type: 'header-nav', from: index }),
+                    );
+                  }}
+                  onDragOver={(e) => e.preventDefault()}
+                  onDrop={(e) => {
+                    e.preventDefault();
+                    const raw = e.dataTransfer.getData('text/plain');
+                    const payload = (() => {
+                      try {
+                        return JSON.parse(raw) as { type?: string; from?: number };
+                      } catch {
+                        return null;
+                      }
+                    })();
+                    if (!payload || payload.type !== 'header-nav') return;
+                    const from = payload.from ?? -1;
+                    const to = index;
+                    if (from === to || from < 0 || to < 0) return;
+                    const next = [...headerConfig.navItems];
+                    const [moved] = next.splice(from, 1);
+                    next.splice(to, 0, moved);
+                    setHeaderConfig({ ...headerConfig, navItems: next });
+                  }}
+                >
                   <Input 
                     value={item.name} 
                     className="flex-1" 
@@ -2185,12 +2349,42 @@ export default function Admin() {
       {/* Footer Config */}
       <div className="bg-white rounded-xl shadow-sm border p-6">
         <h3 className="font-semibold text-gray-900 mb-4 flex items-center gap-2">
-          <Menu className="w-5 h-5 text-blue-600" />
+          <Menu className="w-5 h-5 text-brand-orange" />
           页脚配置
         </h3>
         <div className="space-y-4">
           {footerConfig.columns.map((column, colIndex) => (
-            <div key={colIndex} className="border rounded-lg p-4">
+            <div
+              key={colIndex}
+              className="border rounded-lg p-4 cursor-move"
+              draggable
+              onDragStart={(e) => {
+                e.dataTransfer.setData(
+                  'text/plain',
+                  JSON.stringify({ type: 'footer-column', from: colIndex }),
+                );
+              }}
+              onDragOver={(e) => e.preventDefault()}
+              onDrop={(e) => {
+                e.preventDefault();
+                const raw = e.dataTransfer.getData('text/plain');
+                const payload = (() => {
+                  try {
+                    return JSON.parse(raw) as { type?: string; from?: number };
+                  } catch {
+                    return null;
+                  }
+                })();
+                if (!payload || payload.type !== 'footer-column') return;
+                const from = payload.from ?? -1;
+                const to = colIndex;
+                if (from === to || from < 0 || to < 0) return;
+                const nextCols = [...footerConfig.columns];
+                const [moved] = nextCols.splice(from, 1);
+                nextCols.splice(to, 0, moved);
+                setFooterConfig({ ...footerConfig, columns: nextCols });
+              }}
+            >
               <div className="flex items-center justify-between mb-3">
                 <Input 
                   value={column.title}
@@ -2213,7 +2407,52 @@ export default function Admin() {
               </div>
               <div className="space-y-2">
                 {column.links.map((link, linkIndex) => (
-                  <div key={linkIndex} className="flex items-center gap-2">
+                  <div
+                    key={linkIndex}
+                    className="flex items-center gap-2 cursor-move"
+                    draggable
+                    onDragStart={(e) => {
+                      e.dataTransfer.setData(
+                        'text/plain',
+                        JSON.stringify({
+                          type: 'footer-link',
+                          colIndex,
+                          from: linkIndex,
+                        }),
+                      );
+                    }}
+                    onDragOver={(e) => e.preventDefault()}
+                    onDrop={(e) => {
+                      e.preventDefault();
+                      const raw = e.dataTransfer.getData('text/plain');
+                      const payload = (() => {
+                        try {
+                          return JSON.parse(raw) as {
+                            type?: string;
+                            colIndex?: number;
+                            from?: number;
+                          };
+                        } catch {
+                          return null;
+                        }
+                      })();
+                      if (
+                        !payload ||
+                        payload.type !== 'footer-link' ||
+                        payload.colIndex !== colIndex
+                      )
+                        return;
+                      const from = payload.from ?? -1;
+                      const to = linkIndex;
+                      if (from === to || from < 0 || to < 0) return;
+                      const nextCols = [...footerConfig.columns];
+                      const links = [...nextCols[colIndex].links];
+                      const [moved] = links.splice(from, 1);
+                      links.splice(to, 0, moved);
+                      nextCols[colIndex] = { ...nextCols[colIndex], links };
+                      setFooterConfig({ ...footerConfig, columns: nextCols });
+                    }}
+                  >
                     <Input 
                       value={link.name} 
                       className="flex-1" 
@@ -2297,7 +2536,7 @@ export default function Admin() {
       </div>
 
       <Button 
-        className="bg-blue-600 hover:bg-blue-700 text-white gap-2"
+        className="bg-brand-orange hover:bg-brand-orange/90 text-white gap-2"
         onClick={() => {
           setConfig({
             ...config,
@@ -2305,6 +2544,7 @@ export default function Admin() {
             footer: footerConfig,
             homepage: homepageConfig,
           });
+          showToast('外观设置已保存');
         }}
       >
         <Save className="w-4 h-4" />
@@ -2428,6 +2668,7 @@ export default function Admin() {
     setIsEditingArticle(false);
     setSelectedArticle(null);
     setGeneratedArticle({});
+    showToast('文章已保存');
   };
 
   const handleDeleteArticle = (id: string) => {
@@ -2466,7 +2707,7 @@ export default function Admin() {
             AI生成文章
           </Button>
           <Button 
-            className="bg-blue-600 hover:bg-blue-700 text-white gap-2"
+            className="bg-brand-orange hover:bg-brand-orange/90 text-white gap-2"
             onClick={() => {
               setSelectedArticle(null);
               setIsEditingArticle(true);
@@ -2597,8 +2838,8 @@ export default function Admin() {
       >
         <DialogContent className="max-w-2xl max-h-[90vh] overflow-auto">
           <DialogHeader>
-            <DialogTitle className="flex items-center gap-2">
-              <Wand2 className="w-5 h-5 text-blue-600" />
+              <DialogTitle className="flex items-center gap-2">
+              <Wand2 className="w-5 h-5 text-brand-orange" />
               AI生成SEO文章
             </DialogTitle>
           </DialogHeader>
@@ -2617,9 +2858,9 @@ export default function Admin() {
                   支持多个关键词，用逗号分隔。AI将生成符合SEO/GEO优化的文章
                 </p>
               </div>
-              <div className="bg-blue-50 rounded-lg p-4">
-                <h4 className="font-medium text-blue-900 mb-2">AI将自动生成：</h4>
-                <ul className="text-sm text-blue-700 space-y-1">
+              <div className="bg-brand-orange/5 rounded-lg p-4">
+                <h4 className="font-medium text-brand-black mb-2">AI将自动生成：</h4>
+                <ul className="text-sm text-brand-gray-2 space-y-1">
                   <li>✓ SEO优化的标题和描述</li>
                   <li>✓ 结构化的文章内容</li>
                   <li>✓ 相关的标签和关键词</li>
@@ -2627,10 +2868,10 @@ export default function Admin() {
                   <li>✓ 去AI化处理，更自然</li>
                 </ul>
               </div>
-              <Button 
-                onClick={handleGenerateArticle}
-                disabled={!generationPrompt.trim() || isGeneratingArticle}
-                className="w-full bg-blue-600 hover:bg-blue-700"
+                <Button 
+                  onClick={handleGenerateArticle}
+                  disabled={!generationPrompt.trim() || isGeneratingArticle}
+                  className="w-full bg-brand-orange hover:bg-brand-orange/90"
               >
                 {isGeneratingArticle ? (
                   <>
@@ -2683,7 +2924,7 @@ export default function Admin() {
                 <Label>关键词</Label>
                 <div className="flex flex-wrap gap-2 mt-1">
                   {generatedArticle.keywords?.map((kw, i) => (
-                    <span key={i} className="px-2 py-1 bg-blue-100 text-blue-700 rounded text-sm">
+                    <span key={i} className="px-2 py-1 bg-brand-orange/10 text-brand-orange rounded text-sm">
                       {kw}
                     </span>
                   ))}
@@ -2707,7 +2948,7 @@ export default function Admin() {
                 </Button>
                 <Button 
                   onClick={handleSaveArticle}
-                  className="flex-1 bg-blue-600 hover:bg-blue-700"
+                  className="flex-1 bg-brand-orange hover:bg-brand-orange/90"
                 >
                   <Save className="w-4 h-4 mr-2" />
                   保存为草稿
@@ -2723,7 +2964,7 @@ export default function Admin() {
         <DialogContent className="max-w-3xl max-h-[90vh] overflow-auto">
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
-              <FileEdit className="w-5 h-5 text-blue-600" />
+              <FileEdit className="w-5 h-5 text-brand-orange" />
               {selectedArticle ? '编辑文章' : '新建文章'}
             </DialogTitle>
           </DialogHeader>
@@ -2824,7 +3065,7 @@ export default function Admin() {
               </Button>
               <Button 
                 onClick={handleSaveArticle}
-                className="flex-1 bg-blue-600 hover:bg-blue-700"
+                className="flex-1 bg-brand-orange hover:bg-brand-orange/90"
               >
                 <Save className="w-4 h-4 mr-2" />
                 保存
@@ -2844,7 +3085,7 @@ export default function Admin() {
           <p className="text-sm text-gray-500">管理网站的静态页面内容</p>
         </div>
         <Button
-          className="bg-blue-600 hover:bg-blue-700 text-white gap-2"
+          className="bg-brand-orange hover:bg-brand-orange/90 text-white gap-2"
           onClick={() => {
             const today = new Date().toISOString().slice(0, 10);
             setPages(prev => [
@@ -2946,13 +3187,13 @@ export default function Admin() {
       >
         <div className="p-4 border-b">
           <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-xl bg-blue-600 flex items-center justify-center">
+            <div className="w-9 h-9 rounded-xl bg-brand-orange flex items-center justify-center">
               <LayoutDashboard className="w-5 h-5 text-white" />
             </div>
             {isSidebarOpen && <span className="font-bold text-gray-900">Admin</span>}
-            <button
+              <button
               onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-              className="ml-auto w-8 h-8 rounded-lg bg-gray-100 flex items-center justify-center hover:bg-blue-100 transition-colors"
+                className="ml-auto w-8 h-8 rounded-lg bg-gray-100 flex items-center justify-center hover:bg-brand-orange/10 transition-colors"
               aria-label="Toggle Sidebar"
             >
               {isSidebarOpen ? <ChevronLeft className="w-4 h-4" /> : <ChevronRight className="w-4 h-4" />}
@@ -3021,8 +3262,8 @@ export default function Admin() {
                             onClick={() => setActiveSection(item.id)}
                             className={`relative w-full flex items-center gap-3 px-3 py-3 rounded-xl transition-all duration-300 ${
                               activeSection === item.id
-                                ? 'bg-blue-600 text-white'
-                                : 'text-gray-600 hover:bg-blue-50 hover:text-blue-600'
+                                ? 'bg-brand-orange text-white'
+                                : 'text-gray-600 hover:bg-brand-orange/10 hover:text-brand-orange'
                             }`}
                           >
                             <div
@@ -3063,12 +3304,12 @@ export default function Admin() {
                 <Bell className="w-5 h-5 text-gray-500" />
                 <span className="absolute top-1 right-1 w-2 h-2 rounded-full bg-red-500" />
               </button>
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center text-white font-bold">
-                  A
-                </div>
-                <span className="font-medium text-gray-900">Admin</span>
-              </div>
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 rounded-full bg-gradient-to-br from-brand-orange via-orange-500 to-orange-600 flex items-center justify-center text-white font-bold">
+            A
+          </div>
+          <span className="font-medium text-gray-900">Admin</span>
+        </div>
             </div>
           </div>
         </header>
@@ -3195,15 +3436,28 @@ export default function Admin() {
                     />
                   </div>
                 </div>
-                <div className="flex justify-end">
-                  <Button className="bg-blue-600 hover:bg-blue-700 text-white">
-                    保存设置
-                  </Button>
-                </div>
+        <div className="flex justify-end">
+          <Button
+            className="bg-brand-orange hover:bg-brand-orange/90 text-white"
+            onClick={() => showToast('系统设置已保存')}
+          >
+            保存设置
+          </Button>
+        </div>
               </div>
             </div>
           )}
         </div>
+        {toast && (
+          <div className="fixed bottom-6 right-6 z-50">
+            <div className="flex items-center gap-2 rounded-xl bg-white shadow-lg border border-brand-orange/30 px-4 py-3">
+              <div className="w-2 h-2 rounded-full bg-brand-orange" />
+              <span className="text-sm font-medium text-brand-black">
+                {toast.message}
+              </span>
+            </div>
+          </div>
+        )}
       </main>
     </div>
   );

@@ -92,6 +92,10 @@ const defaultConfig: SiteConfig = {
     enableAtsFloat: true,
     atsFloatDefaultCollapsed: false,
   },
+  analytics: {
+    gaMeasurementId: '',
+    gtmId: '',
+  },
 }
 
 export function SiteConfigProvider({ children }: { children: ReactNode }) {
@@ -109,6 +113,10 @@ export function SiteConfigProvider({ children }: { children: ReactNode }) {
               ...defaultConfig.features,
               ...(parsed.features || {}),
             } as NonNullable<SiteConfig['features']>,
+            analytics: {
+              ...defaultConfig.analytics,
+              ...(parsed.analytics || {}),
+            },
           }
           return merged
         } catch (e) {

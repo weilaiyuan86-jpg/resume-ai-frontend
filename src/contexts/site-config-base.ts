@@ -38,6 +38,10 @@ export interface SiteConfig {
     enableAtsFloat: boolean
     atsFloatDefaultCollapsed: boolean
   }
+  analytics?: {
+    gaMeasurementId?: string
+    gtmId?: string
+  }
 }
 
 export interface SiteConfigContextType {

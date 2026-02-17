@@ -25,6 +25,7 @@ import JobGoalPlanner from '@/pages/JobGoalPlanner';
 import JobDescription from '@/pages/JobDescription';
 import ColdEmail from '@/pages/ColdEmail';
 import AIChatbot from '@/components/AIChatbot';
+import { AnalyticsProvider } from '@/components/AnalyticsProvider';
 import { useMemo } from 'react';
 import { SiteConfigProvider } from '@/contexts/SiteConfigContext';
 import { useSiteConfig } from '@/hooks/useSiteConfig';
@@ -117,6 +118,7 @@ function App() {
           <Route path="*" element={<Home />} />
         </Routes>
         <ChatbotWrapper />
+        <AnalyticsProvider />
       </Router>
     </SiteConfigProvider>
   );
