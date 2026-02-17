@@ -13,6 +13,7 @@ import {
 } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
+import { useSiteConfig } from '@/hooks/useSiteConfig';
 
 interface InterviewQuestion {
   id: string;
@@ -483,6 +484,10 @@ function useAuth() {
 export default function AIInterview() {
   const { isLoggedIn, isLoading } = useAuth();
   const navigate = useNavigate();
+  const { config } = useSiteConfig();
+  const brandName =
+    (config.header?.logo && config.header.logo.trim()) || 'EvalShare';
+  const brandInitial = brandName.charAt(0).toUpperCase();
   const [showLoginDialog, setShowLoginDialog] = useState(!isLoading && !isLoggedIn);
   
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
@@ -491,7 +496,7 @@ export default function AIInterview() {
   const [inputMode, setInputMode] = useState<'voice' | 'text'>('voice');
   const [textAnswer, setTextAnswer] = useState('');
   const [isMicOn, setIsMicOn] = useState(true);
-  const [isVideoOn, setIsVideoOn] = useState(true);
+  const [isVideoOn, setIsVideoOn] = useState(false);
   const [showHint, setShowHint] = useState(false);
   const [interviewComplete, setInterviewComplete] = useState(false);
   const [showReport, setShowReport] = useState(false);
@@ -507,7 +512,6 @@ export default function AIInterview() {
   const [isReportLoading, setIsReportLoading] = useState(false);
   const [reportError, setReportError] = useState<string | null>(null);
   
-  const videoRef = useRef<HTMLVideoElement>(null);
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const { transcript, startListening, stopListening, setTranscript } = useSpeechRecognition();
   const { modelLabel, hasPromptInfo } = getAiInterviewUiInfo();
@@ -533,28 +537,19 @@ export default function AIInterview() {
           !navigator.mediaDevices ||
           !navigator.mediaDevices.getUserMedia
         ) {
-          setPermissionError('当前浏览器不支持摄像头或麦克风，请尝试使用最新版 Chrome / Edge');
+          setPermissionError('当前浏览器不支持麦克风，请尝试使用最新版 Chrome / Edge');
           return;
         }
 
         localStream = await navigator.mediaDevices.getUserMedia({
-          video: true,
+          video: false,
           audio: true,
         });
         setStream(localStream);
-        if (videoRef.current) {
-          videoRef.current.srcObject = localStream;
-          const playPromise = videoRef.current.play();
-          if (playPromise && typeof (playPromise as Promise<void>).catch === 'function') {
-            playPromise.catch((err) => {
-              console.error('Failed to start video playback', err);
-            });
-          }
-        }
         setPermissionError(null);
       } catch (err) {
         console.error('Error accessing media devices:', err);
-        setPermissionError('无法访问摄像头或麦克风，请检查浏览器和系统权限设置');
+        setPermissionError('无法访问麦克风，请检查浏览器和系统权限设置');
       }
     };
 
@@ -1369,9 +1364,21 @@ export default function AIInterview() {
       {/* Header */}
       <header className="flex items-center justify-between px-4 sm:px-6 py-4 border-b border-border bg-card">
         <div className="flex items-center gap-4">
-          <Link to="/" className="flex items-center gap-2">
-            <Sparkles className="w-5 h-5 text-primary" />
-            <span className="font-semibold hidden sm:inline">EvalShare</span>
+          <Link
+            to="/"
+            className="flex items-center gap-2 group transition-transform duration-300 ease-elastic hover:scale-105"
+          >
+            <div className="w-10 h-10 rounded-xl bg-brand-orange flex items-center justify-center shadow-glow">
+              <span className="text-lg font-extrabold text-white">
+                {brandInitial}
+              </span>
+            </div>
+            <span className="text-xl font-bold text-foreground">
+              {config.header.logo || 'Resume'}
+              <span className="text-brand-orange">
+                {config.header.logo ? '' : 'AI'}
+              </span>
+            </span>
           </Link>
           <div className="h-4 w-px bg-border hidden sm:block" />
           <span className="text-sm text-muted-foreground truncate max-w-[150px] sm:max-w-none">
@@ -1402,21 +1409,11 @@ export default function AIInterview() {
           {/* Video Preview */}
           <div className="relative mb-6 w-full max-w-md">
             <div className="aspect-video bg-muted rounded-2xl overflow-hidden border border-border">
-              {isVideoOn && stream ? (
-                <video
-                  ref={videoRef}
-                  autoPlay
-                  muted
-                  playsInline
-                  className="w-full h-full object-cover"
-                />
-              ) : (
-                <div className="w-full h-full flex items-center justify-center">
-                  <div className="w-20 h-20 rounded-full bg-muted-foreground/20 flex items-center justify-center">
-                    <VideoOff className="w-8 h-8 text-muted-foreground" />
-                  </div>
+              <div className="w-full h-full flex items-center justify-center">
+                <div className="w-20 h-20 rounded-full bg-muted-foreground/20 flex items-center justify-center">
+                  <VideoOff className="w-8 h-8 text-muted-foreground" />
                 </div>
-              )}
+              </div>
             </div>
             {isRecording && (
               <div className="absolute top-4 left-4 flex items-center gap-2 px-3 py-1.5 bg-red-500 rounded-full text-xs font-medium text-white">

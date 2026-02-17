@@ -5,7 +5,9 @@ import { Button } from '@/components/ui/button';
 import { ThemeToggle } from './ThemeToggle';
 import { useSiteConfig } from '@/hooks/useSiteConfig';
 
-const navLinks = [
+type NavLink = { name: string; href: string };
+
+const navLinks: NavLink[] = [
   { name: '首页', href: '/' },
   { name: 'ATS检测', href: '/ats-checker' },
   { name: '简历编辑', href: '/resume-editor' },
@@ -28,6 +30,7 @@ export default function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [showAITools, setShowAITools] = useState(false);
+  const [remoteNavItems, setRemoteNavItems] = useState<NavLink[] | null>(null);
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(() => {
     if (typeof window === 'undefined') return false;
     const rawUser = localStorage.getItem('user');
@@ -51,7 +54,11 @@ export default function Navbar() {
   const location = useLocation();
   const navigate = useNavigate();
   const { config } = useSiteConfig();
-  const navItems = (config.header?.navItems?.length ? config.header.navItems : navLinks);
+  const baseNavItems: NavLink[] = config.header?.navItems?.length
+    ? config.header.navItems
+    : navLinks;
+  const navItems: NavLink[] =
+    remoteNavItems && remoteNavItems.length ? remoteNavItems : baseNavItems;
   const brandName = (config.header?.logo && config.header.logo.trim()) || 'EvalShare';
   const brandInitial = brandName.charAt(0).toUpperCase();
 
@@ -61,6 +68,36 @@ export default function Navbar() {
     };
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  useEffect(() => {
+    let cancelled = false;
+    const loadNavigation = async () => {
+      try {
+        const resp = await fetch('/api/navigation?position=header');
+        if (!resp.ok) return;
+        const data = (await resp.json()) as {
+          ok?: boolean;
+          items?: { label?: string; path?: string; visible?: boolean }[];
+        };
+        if (!data || data.ok === false || !Array.isArray(data.items)) return;
+        const items: NavLink[] = data.items
+          .filter((item) => item && item.visible !== false)
+          .map((item) => ({
+            name: String(item.label || '').trim() || '未命名',
+            href: String(item.path || '/'),
+          }));
+        if (!items.length) return;
+        if (!cancelled) {
+          setRemoteNavItems(items);
+        }
+      } catch {
+      }
+    };
+    loadNavigation();
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
   useEffect(() => {
