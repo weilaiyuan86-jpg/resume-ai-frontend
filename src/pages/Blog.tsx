@@ -16,7 +16,7 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 gsap.registerPlugin(ScrollTrigger);
 
 const categories = [
-  { id: 'resume', name: '简历优化', count: 45 },
+  { id: 'resume', name: '简历评估与优化', count: 45 },
   { id: 'interview', name: '面试准备', count: 32 },
   { id: 'visa', name: '签证指南', count: 28 },
   { id: 'career', name: '职业发展', count: 24 },
@@ -37,8 +37,8 @@ const generateArticles = () => {
   const articles = [
     {
       id: '1',
-      title: '如何撰写符合美国规范的简历 (ATS友好)',
-      excerpt: '了解美国求职市场中的 ATS 系统工作原理，手把手教你避开常见的排版错误。',
+      title: '如何撰写符合美国规范的简历（含 ATS 评估思路）',
+      excerpt: '从 ATS 系统工作原理出发，结合 10万+ 大厂录取简历样本，手把手教你避开常见的排版与匹配度问题。',
       category: 'resume',
       image: 'https://images.unsplash.com/photo-1586281380349-632531db7ed4?w=600&h=400&fit=crop',
       readTime: '8分钟',

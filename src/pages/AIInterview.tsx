@@ -1011,10 +1011,10 @@ export default function AIInterview() {
               <Sparkles className="w-10 h-10 text-primary-foreground" />
             </div>
             <h1 className="text-3xl md:text-4xl font-bold mb-4">
-              准备开始 AI 面试练习
+              从简历诊断到面试表现，完整闭环练习
             </h1>
             <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-              选择面试类型，我们的 AI 将模拟真实面试场景，帮助你提升面试表现
+              基于你在简历评估与职位匹配中的诊断结果，AI 模拟真实面试场景，帮助你针对性提升表达与思路。
             </p>
             {(modelLabel || hasPromptInfo) && (
               <p className="mt-2 text-xs text-muted-foreground">

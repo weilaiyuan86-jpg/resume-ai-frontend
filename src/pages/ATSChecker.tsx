@@ -429,10 +429,10 @@ export default function ATSChecker() {
               <span>AI驱动分析</span>
             </div>
             <h1 className="text-4xl sm:text-5xl font-bold text-foreground mb-4">
-              ATS简历检测
+              ATS 简历评估诊断
             </h1>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              检测您的简历是否通过求职者追踪系统，获取AI优化的改进建议
+              先评估 ATS 解析与匹配度，再给出针对性优化建议和详细诊断报告。
             </p>
           </div>
         </div>

@@ -78,8 +78,8 @@ export default function About() {
               <span className="text-blue-600">精英简历平台</span>
             </h1>
             <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-              EvalShare 成立于 2020 年，致力于帮助全球求职者打造专业简历，
-              通过 AI 技术优化求职体验，助力每一位用户实现职业梦想。
+              EvalShare 成立于 2020 年，是一款 AI 简历评估诊断平台。
+              我们先用数据和模型诊断简历与职位的匹配问题，再给出针对性的智能优化建议，帮助全球求职者提高求职成功率。
             </p>
           </div>
         </div>
@@ -106,9 +106,9 @@ export default function About() {
             <h2 className="text-3xl font-bold text-foreground mb-6">我们的使命</h2>
             <p className="text-lg text-gray-600 leading-relaxed">
               在 EvalShare，我们相信每个人都值得拥有一份能够展现自己价值的简历。
-              我们的使命是通过先进的 AI 技术，帮助求职者突破语言和文化的障碍，
+              我们的使命是通过先进的 AI 评估与诊断技术，帮助求职者先看清问题，再做更有针对性的优化，
               在竞争激烈的就业市场中脱颖而出。无论你是应届生还是资深专业人士，
-              我们都致力于为你提供最专业、最便捷的求职解决方案。
+              我们都致力于用数据和工具提升你的求职成功率，而不仅仅是生成一份“好看”的简历。
             </p>
           </div>
         </div>

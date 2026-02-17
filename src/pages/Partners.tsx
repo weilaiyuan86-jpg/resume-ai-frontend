@@ -46,7 +46,7 @@ const partnerTypes = [
   {
     icon: Users,
     title: '职业顾问',
-    description: '为客户提供AI驱动的简历优化服务',
+    description: '为客户提供先评估诊断、再智能优化的简历服务',
     benefits: [
       '提高工作效率',
       '扩大客户规模',

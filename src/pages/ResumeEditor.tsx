@@ -817,7 +817,7 @@ export default function ResumeEditor() {
                 onClick={() => setShowCleaningDialog(true)}
               >
                 <Sparkles className="w-4 h-4" />
-                AI 清洗
+                基于诊断的AI清洗
               </Button>
             </div>
 
@@ -1444,13 +1444,13 @@ export default function ResumeEditor() {
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
               <Sparkles className="w-4 h-4 text-brand-orange" />
-              AI 清洗工具
+              基于诊断结果的 AI 清洗
             </DialogTitle>
           </DialogHeader>
           <div className="space-y-4">
             <div className="bg-gradient-to-br from-gray-900 to-gray-800 rounded-xl text-white p-4">
               <p className="text-xs text-gray-300">
-                选择清洗范围与策略，支持后端接入；失败自动回退本地策略。
+                基于前序评估与诊断结果，选择清洗范围与策略；支持后端接入，失败自动回退本地方案。
               </p>
             </div>
             <div>

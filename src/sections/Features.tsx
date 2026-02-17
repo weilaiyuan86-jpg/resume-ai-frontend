@@ -76,10 +76,10 @@ export default function Features() {
         {/* Section Header */}
         <div className="text-center mb-16">
           <h2 className="text-3xl sm:text-4xl font-bold text-brand-black mb-4">
-            强大功能，助力求职
+            先评估诊断，再智能优化
           </h2>
           <p className="text-lg text-brand-gray-1 max-w-2xl mx-auto">
-            我们的AI驱动工具帮助您创建专业简历，通过ATS检测，获得更多面试机会
+            基于 10万+ 美国大厂录取简历与真实求职数据，从简历质量、ATS 解析到面试准备，给出更准、更深、更狠的优化方案。
           </p>
         </div>
 

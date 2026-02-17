@@ -66,7 +66,7 @@ export default function Footer() {
                   </div>
                 </div>
                 <p className="text-gray-400 text-sm">
-                  一键优化 LinkedIn 简历，实时 ATS 评分，智能求职信生成
+                  在 LinkedIn 等场景先评估简历质量与 ATS 匹配度，再一键生成更精准的优化和求职信。
                 </p>
               </div>
             </div>
