@@ -451,7 +451,7 @@ function BlogList({ onArticleClick }: { onArticleClick?: (article: typeof allArt
     const colors: Record<string, string> = {
       default: 'bg-brand-orange/10 text-brand-orange',
     };
-    return colors.default;
+    return colors[id] || colors.default;
   };
 
   return (
