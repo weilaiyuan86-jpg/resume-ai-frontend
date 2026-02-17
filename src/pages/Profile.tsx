@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { 
+import {
   Mail, Phone, MapPin, Briefcase, 
   FileText, Edit3, Camera, CheckCircle, Plus, Trash2, Download
 } from 'lucide-react';
@@ -15,6 +15,8 @@ import Footer from '@/components/Footer';
 import gsap from 'gsap';
 
 type UserRole = 'super_admin' | 'admin' | 'viewer' | 'user';
+
+const API_BASE_URL = '/api';
 
 const mockResumes = [
   { id: '1', name: 'Software Engineer Resume', updatedAt: '2024-01-20', status: 'active' },
@@ -33,7 +35,7 @@ export default function Profile() {
   const [isEditing, setIsEditing] = useState(false);
   const [activeTab, setActiveTab] = useState('overview');
   const profileRef = useRef<HTMLDivElement>(null);
-  const [email] = useState<string | null>(() => {
+  const [email, setEmail] = useState<string | null>(() => {
     if (typeof window === 'undefined') return null;
     const raw = localStorage.getItem('user');
     if (!raw) return null;
@@ -44,6 +46,11 @@ export default function Profile() {
       return null;
     }
   });
+  const [fullName, setFullName] = useState('');
+  const [phone, setPhone] = useState('');
+  const [location, setLocation] = useState('');
+  const [saving, setSaving] = useState(false);
+  const [saveMessage, setSaveMessage] = useState<string | null>(null);
   const [role] = useState<UserRole | null>(() => {
     if (typeof window === 'undefined') return null;
     const raw = localStorage.getItem('user');
@@ -74,6 +81,137 @@ export default function Profile() {
 
     return () => ctx.revert();
   }, []);
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const token = localStorage.getItem('auth_token') || '';
+    if (!token) return;
+    const loadProfile = async () => {
+      try {
+        const resp = await fetch(`${API_BASE_URL}/me`, {
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        if (!resp.ok) return;
+        const data = await resp.json();
+        const user = data?.user as { email?: string; fullName?: string } | undefined;
+        if (user) {
+          if (user.email && typeof user.email === 'string') {
+            setEmail(user.email);
+            try {
+              const raw = localStorage.getItem('user');
+              if (raw) {
+                const parsed = JSON.parse(raw) as { email?: string; role?: string } | null;
+                localStorage.setItem(
+                  'user',
+                  JSON.stringify({
+                    ...parsed,
+                    email: user.email,
+                  }),
+                );
+              }
+            } catch {
+            }
+          }
+          if (typeof user.fullName === 'string') {
+            setFullName(user.fullName);
+          }
+        }
+        try {
+          const extraRaw = localStorage.getItem('profile_extra');
+          if (extraRaw) {
+            const extra = JSON.parse(extraRaw) as { phone?: string; location?: string } | null;
+            if (extra?.phone) setPhone(extra.phone);
+            if (extra?.location) setLocation(extra.location);
+          }
+        } catch {
+        }
+      } catch {
+      }
+    };
+    void loadProfile();
+  }, []);
+
+  const initials =
+    fullName && fullName.trim().length > 0
+      ? fullName
+          .trim()
+          .split(/\s+/)
+          .map((part) => part[0])
+          .join('')
+          .toUpperCase()
+          .slice(0, 2)
+      : email && email.trim().length > 0
+      ? email[0]?.toUpperCase() || 'U'
+      : 'U';
+
+  const handleSaveAccount = async () => {
+    if (typeof window === 'undefined') return;
+    const token = localStorage.getItem('auth_token') || '';
+    if (!token) return;
+    setSaving(true);
+    setSaveMessage(null);
+    try {
+      const resp = await fetch(`${API_BASE_URL}/me`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          fullName: fullName.trim() || null,
+        }),
+      });
+      if (resp.ok) {
+        const data = await resp.json();
+        const user = data?.user as { email?: string; fullName?: string } | undefined;
+        if (user) {
+          if (typeof user.fullName === 'string') {
+            setFullName(user.fullName);
+          }
+          if (user.email && typeof user.email === 'string') {
+            setEmail(user.email);
+            try {
+              const raw = localStorage.getItem('user');
+              if (raw) {
+                const parsed = JSON.parse(raw) as { email?: string; role?: string } | null;
+                localStorage.setItem(
+                  'user',
+                  JSON.stringify({
+                    ...parsed,
+                    email: user.email,
+                  }),
+                );
+              }
+            } catch {
+            }
+          }
+        }
+        try {
+          localStorage.setItem(
+            'profile_extra',
+            JSON.stringify({
+              phone,
+              location,
+            }),
+          );
+        } catch {
+        }
+        setSaveMessage('保存成功');
+      } else {
+        setSaveMessage('保存失败');
+      }
+    } catch {
+      setSaveMessage('保存失败');
+    } finally {
+      setSaving(false);
+      setTimeout(() => {
+        setSaveMessage(null);
+      }, 2400);
+    }
+  };
 
   const roleLabel =
     role === 'super_admin'
@@ -108,7 +246,7 @@ export default function Profile() {
               {/* Avatar */}
               <div className="relative">
                 <div className="w-24 h-24 rounded-full bg-gradient-to-br from-brand-orange to-orange-500 flex items-center justify-center text-white text-3xl font-bold">
-                  JD
+                  {initials}
                 </div>
                 <button className="absolute bottom-0 right-0 w-8 h-8 rounded-full bg-brand-orange text-white flex items-center justify-center shadow-lg hover:bg-brand-orange/90 transition-colors">
                   <Camera className="w-4 h-4" />
@@ -130,13 +268,15 @@ export default function Profile() {
                     <Mail className="w-4 h-4" />
                     {email || '未登录邮箱'}
                   </span>
-                  <span className="flex items-center gap-1">
-                    <Phone className="w-4 h-4" />
-                    +1 234 567 890
-                  </span>
+                  {phone && (
+                    <span className="flex items-center gap-1">
+                      <Phone className="w-4 h-4" />
+                      {phone}
+                    </span>
+                  )}
                   <span className="flex items-center gap-1">
                     <MapPin className="w-4 h-4" />
-                    San Francisco, CA
+                    {location || '尚未设置地点'}
                   </span>
                 </div>
 
@@ -379,24 +519,48 @@ export default function Profile() {
                   <div className="grid md:grid-cols-2 gap-6">
                     <div>
                       <Label>全名</Label>
-                      <Input defaultValue="John Doe" className="mt-2" />
+                      <Input
+                        value={fullName}
+                        onChange={(e) => setFullName(e.target.value)}
+                        className="mt-2"
+                        placeholder="请输入您的姓名"
+                      />
                     </div>
                     <div>
                       <Label>邮箱</Label>
-                      <Input defaultValue="john.doe@example.com" className="mt-2" />
+                      <Input value={email || ''} disabled className="mt-2" />
                     </div>
                     <div>
                       <Label>电话</Label>
-                      <Input defaultValue="+1 234 567 890" className="mt-2" />
+                      <Input
+                        value={phone}
+                        onChange={(e) => setPhone(e.target.value)}
+                        className="mt-2"
+                        placeholder="可选填写"
+                      />
                     </div>
                     <div>
                       <Label>地点</Label>
-                      <Input defaultValue="San Francisco, CA" className="mt-2" />
+                      <Input
+                        value={location}
+                        onChange={(e) => setLocation(e.target.value)}
+                        className="mt-2"
+                        placeholder="可选填写"
+                      />
                     </div>
                   </div>
-                  <Button className="bg-brand-orange hover:bg-brand-orange/90 text-white">
+                  <div className="flex items-center gap-4">
+                    <Button
+                      className="bg-brand-orange hover:bg-brand-orange/90 text-white"
+                      onClick={handleSaveAccount}
+                      disabled={saving}
+                    >
                     保存更改
-                  </Button>
+                    </Button>
+                    {saveMessage && (
+                      <span className="text-sm text-brand-gray-2">{saveMessage}</span>
+                    )}
+                  </div>
                 </div>
               </div>
 

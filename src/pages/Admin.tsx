@@ -1123,22 +1123,26 @@ export default function Admin() {
           },
         });
         if (resp.ok) {
-          const data = (await resp.json()) as {
+          const raw = await resp.json();
+          const arr =
+            Array.isArray(raw) && raw.length && typeof raw[0] === 'object'
+              ? raw
+              : Array.isArray(raw?.users)
+              ? raw.users
+              : [];
+          const list = arr.map((u: {
             id: string;
             email: string;
             plan?: string;
             role?: 'super_admin' | 'admin' | 'viewer' | 'user';
             fullName?: string;
-          }[];
-          const list = Array.isArray(data)
-            ? data.map((u) => ({
-                id: u.id,
-                email: u.email,
-                plan: u.plan || 'free',
-                role: u.role || 'user',
-                fullName: u.fullName,
-              }))
-            : [];
+          }) => ({
+            id: u.id,
+            email: u.email,
+            plan: u.plan || 'free',
+            role: u.role || 'user',
+            fullName: u.fullName,
+          }));
           setUsersList(list);
           setResetPasswords({});
           saveUsersToLocal(list);
