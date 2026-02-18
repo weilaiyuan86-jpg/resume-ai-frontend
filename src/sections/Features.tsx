@@ -15,9 +15,10 @@ export default function Features() {
       homepageFeatures && homepageFeatures.length > 0
         ? homepageFeatures
         : [
-            { title: 'AI智能优化', description: '一键优化简历内容' },
-            { title: 'ATS检测', description: '确保通过筛选系统' },
-            { title: '面试准备', description: '模拟面试练习' },
+            { title: '结构排版诊断', description: '识别影响 ATS 解析和阅读体验的版式问题' },
+            { title: 'ATS 匹配度评估', description: '评估与目标 JD 的匹配度和通过概率' },
+            { title: '关键词覆盖分析', description: '找出职位要求但简历中缺失的关键能力词' },
+            { title: '语言表达打磨', description: '用数据和结果重新包装你的经历亮点' },
           ],
     [homepageFeatures]
   );
@@ -76,10 +77,10 @@ export default function Features() {
         {/* Section Header */}
         <div className="text-center mb-16">
           <h2 className="text-3xl sm:text-4xl font-bold text-brand-black mb-4">
-            先评估诊断，再智能优化
+            四维简历深度诊断
           </h2>
           <p className="text-lg text-brand-gray-1 max-w-2xl mx-auto">
-            基于 10万+ 美国大厂录取简历与真实求职数据，从简历质量、ATS 解析到面试准备，给出更准、更深、更狠的优化方案。
+            从结构排版、关键词、表达方式到 ATS 匹配度，一份报告看清所有问题，再给出对应优化方案。
           </p>
         </div>
 

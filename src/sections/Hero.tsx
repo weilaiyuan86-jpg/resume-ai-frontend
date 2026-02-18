@@ -110,7 +110,7 @@ export default function Hero() {
               className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-brand-orange/10 text-brand-orange text-sm font-medium mb-6"
             >
               <Star className="w-4 h-4" />
-              <span>AI简历评估诊断平台</span>
+              <span>赴美求职第一站</span>
             </div>
 
             <h1
@@ -148,7 +148,7 @@ export default function Hero() {
                   className="border-2 border-brand-gray-3 hover:border-brand-orange hover:bg-brand-orange/5 transition-all duration-300 h-14 px-8 text-base group"
                 >
                   <Play className="mr-2 w-5 h-5" />
-                  查看示例
+                  查看示例报告
                 </Button>
               </Link>
             </div>
@@ -157,15 +157,15 @@ export default function Hero() {
             <div className="mt-10 flex flex-wrap items-center justify-center lg:justify-start gap-6">
               <div className="flex items-center gap-2 text-sm text-brand-gray-2">
                 <CheckCircle className="w-5 h-5 text-green-500" />
-                <span>免费开始使用</span>
+                <span>已诊断 3,000+ 份简历</span>
               </div>
               <div className="flex items-center gap-2 text-sm text-brand-gray-2">
                 <CheckCircle className="w-5 h-5 text-green-500" />
-                <span>无需信用卡</span>
+                <span>平均面试率提升 217%</span>
               </div>
               <div className="flex items-center gap-2 text-sm text-brand-gray-2">
                 <CheckCircle className="w-5 h-5 text-green-500" />
-                <span>ATS优化</span>
+                <span>诊断准确率 94.7%</span>
               </div>
             </div>
           </div>

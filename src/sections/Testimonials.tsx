@@ -135,11 +135,11 @@ export default function Testimonials() {
         {/* Section Header */}
         <div ref={titleRef} className="text-center mb-16">
           <h2 className="text-3xl sm:text-4xl font-bold text-brand-black mb-4">
-            <span className="word inline-block">客户</span>{' '}
-            <span className="word inline-block text-brand-orange">怎么说</span>
+            <span className="word inline-block">3,000+</span>{' '}
+            <span className="word inline-block text-brand-orange">求职者的选择</span>
           </h2>
           <p className="text-lg text-brand-gray-1 max-w-2xl mx-auto">
-            加入数千名成功求职的专业人士
+            真实用户反馈与数据证明，先诊断再优化，可以显著提升投递命中率和面试机会。
           </p>
         </div>
 

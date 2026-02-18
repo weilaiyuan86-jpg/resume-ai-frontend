@@ -88,35 +88,54 @@ type AdminPricingPlan = {
 
 const defaultPricingPlans: AdminPricingPlan[] = [
   {
-    name: '基础版',
-    price: '$0',
-    period: '/月',
-    description: '适合偶尔求职',
+    name: '免费诊断',
+    price: '¥0',
+    period: '/次',
+    description: '适合想先大致了解问题的求职者',
     icon: 'sparkles',
-    features: ['3份简历', '基础模板', 'PDF下载', '邮件支持'],
+    features: [
+      '基础综合评分',
+      'Top 3 关键问题提示',
+      '预估简历通过率',
+      '简版诊断报告',
+      '改简历方向建议（部分解锁）',
+    ],
     cta: '免费开始',
     href: '/register',
     popular: false,
   },
   {
     name: '专业版',
-    price: '$12',
-    period: '/月',
-    description: '适合积极求职者',
+    price: '¥49',
+    period: '/次',
+    description: '适合正在积极投递的求职者',
     icon: 'zap',
-    features: ['无限简历', '所有模板', 'AI内容建议', 'ATS优化', '优先支持'],
-    cta: '立即升级',
+    features: [
+      '完整 28 项诊断指标报告',
+      'AI 定制改写建议',
+      '行业与同岗位对标数据',
+      'ATS 模拟检测与通过率评估',
+      '竞争力评分与排名',
+      '优先客服支持',
+    ],
+    cta: '开始专业诊断',
     href: '/register?plan=pro',
     popular: true,
   },
   {
-    name: '企业版',
-    price: '$29',
-    period: '/月',
-    description: '适合职业专业人士',
+    name: '求职护航',
+    price: '¥199',
+    period: '/次',
+    description: '适合转行者或准备冲击更高职位的求职者',
     icon: 'building',
-    features: ['专业版所有功能', '自定义品牌', '团队协作', 'API访问', '专属客户经理'],
-    cta: '联系销售',
+    features: [
+      '包含专业版全部功能',
+      '1v1 简历与求职咨询（2 次/月）',
+      '内推与资源对接建议',
+      '面试思路梳理与答题框架',
+      '求职路径与投递策略建议',
+    ],
+    cta: '预约求职护航',
     href: '/contact',
     popular: false,
   },
@@ -541,16 +560,17 @@ export default function Admin() {
     heroImage:
       config.homepage?.heroImage ||
       'https://images.unsplash.com/photo-1586281380349-632531db7ed4?w=800&h=600&fit=crop',
-    heroTitle: config.homepage?.heroTitle || 'AI简历评估诊断平台',
+    heroTitle: config.homepage?.heroTitle || '先诊断，再优化，面试率提升 217%',
     heroSubtitle:
       config.homepage?.heroSubtitle ||
-      '先诊断问题，再智能优化。基于 10万+ 美国大厂录取简历训练的求职成功率预测系统，让评估更准、诊断更深、优化更狠。',
-    ctaText: config.homepage?.ctaText || '免费创建简历',
+      'AI 深度评估 28 个维度，精准定位简历问题，针对性优化提升竞争力。已帮助 3,000+ 留学生获得 Google、Amazon、Meta 等大厂面试。',
+    ctaText: config.homepage?.ctaText || '免费诊断简历（30 秒出结果）',
     features:
       config.homepage?.features || [
-        { title: 'AI智能评估', description: '先做深度简历体检与问题诊断' },
-        { title: 'ATS检测', description: '检查是否符合主流 ATS 解析与筛选规则' },
-        { title: '智能优化', description: '基于诊断结果一键生成针对性优化方案' },
+        { title: '结构排版诊断', description: '识别影响 ATS 解析和阅读体验的版式问题' },
+        { title: 'ATS 匹配度评估', description: '评估与目标 JD 的匹配度和通过概率' },
+        { title: '关键词覆盖分析', description: '找出职位要求但简历中缺失的关键能力词' },
+        { title: '语言表达打磨', description: '用数据和结果重新包装你的经历亮点' },
       ],
   }));
   
@@ -924,7 +944,7 @@ export default function Admin() {
             >
               <div className="flex items-center justify-between">
                 <span className="text-sm font-medium text-gray-700">
-                  {index === 0 ? '基础版' : index === 1 ? '专业版' : '企业版'}
+                  {index === 0 ? '免费诊断' : index === 1 ? '专业版' : '求职护航'}
                 </span>
                 <Badge
                   className={
@@ -2274,6 +2294,39 @@ export default function Admin() {
         </h3>
         <div className="space-y-6">
           <div>
+            <Label>首页模板</Label>
+            <div className="mt-2 flex flex-wrap gap-2">
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={() => {
+                  setHomepageConfig({
+                    heroImage:
+                      homepageConfig.heroImage ||
+                      'https://images.unsplash.com/photo-1586281380349-632531db7ed4?w=800&h=600&fit=crop',
+                    heroTitle: '先诊断，再优化，让面试率提升 217%',
+                    heroSubtitle:
+                      '上传简历，AI 从结构排版、关键词、表达和匹配度四个维度给出诊断报告和优化建议。先看清问题，再动手改简历。',
+                    ctaText: '上传简历免费诊断',
+                    features: [
+                      { title: '结构排版诊断', description: '识别影响 ATS 解析和阅读体验的版式问题' },
+                      { title: 'ATS 匹配度评估', description: '评估与目标 JD 的匹配度和通过概率' },
+                      { title: '关键词覆盖分析', description: '找出职位要求但简历中缺失的关键能力词' },
+                      { title: '语言表达打磨', description: '用数据和结果重新包装你的经历亮点' },
+                    ],
+                  });
+                  showToast('已应用「AI 简历评估诊断」首页模板');
+                }}
+              >
+                AI 简历评估诊断模板
+              </Button>
+            </div>
+            <p className="mt-1 text-xs text-gray-500">
+              点击应用后，可以在下方继续微调图片、标题和功能点文案。
+            </p>
+          </div>
+          <div>
             <Label>首页背景图片</Label>
             <div className="mt-2 space-y-3">
               <div className="relative aspect-video bg-gray-100 rounded-lg overflow-hidden">
@@ -2764,6 +2817,25 @@ export default function Admin() {
                 }
               }
             }
+
+            const idsForReorder = nextHeaderNav
+              .map((item) => item.id)
+              .filter((id): id is number => typeof id === 'number');
+
+            if (idsForReorder.length) {
+              try {
+                await fetch(`${API_BASE_URL}/admin/navigation/reorder`, {
+                  method: 'PATCH',
+                  headers,
+                  body: JSON.stringify({
+                    position: 'header',
+                    ids: idsForReorder,
+                  }),
+                });
+              } catch {
+              }
+            }
+
             setHeaderNavItems(nextHeaderNav);
           }
           setConfig({
@@ -3598,7 +3670,7 @@ export default function Admin() {
               <h3 className="text-lg font-semibold text-gray-900 mb-4">系统设置</h3>
               <div className="space-y-6">
                 <div className="flex flex-col gap-4">
-                  <div className="flex items-center justify-between p-4 border rounded-xl">
+                <div className="flex items-center justify-between p-4 border rounded-xl">
                     <div>
                       <p className="font-medium text-gray-900">启用 AI 客服</p>
                       <p className="text-sm text-gray-500">在前台页面右下角显示 AI 聊天窗口</p>
@@ -3617,6 +3689,11 @@ export default function Admin() {
                           enableAtsFloat: prev.enableAtsFloat ?? true,
                           atsFloatDefaultCollapsed:
                             prev.atsFloatDefaultCollapsed ?? false,
+                          enableHomepagePricing: prev.enableHomepagePricing ?? true,
+                          enableHomepageTestimonials:
+                            prev.enableHomepageTestimonials ?? true,
+                          enableHomepageHowItWorks:
+                            prev.enableHomepageHowItWorks ?? true,
                         };
                         setFeatures(next);
                       }}
@@ -3641,6 +3718,11 @@ export default function Admin() {
                           enableAtsFloat: checked,
                           atsFloatDefaultCollapsed:
                             prev.atsFloatDefaultCollapsed ?? false,
+                          enableHomepagePricing: prev.enableHomepagePricing ?? true,
+                          enableHomepageTestimonials:
+                            prev.enableHomepageTestimonials ?? true,
+                          enableHomepageHowItWorks:
+                            prev.enableHomepageHowItWorks ?? true,
                         };
                         setFeatures(next);
                       }}
@@ -3664,6 +3746,96 @@ export default function Admin() {
                           enableChatbot: prev.enableChatbot ?? true,
                           enableAtsFloat: prev.enableAtsFloat ?? true,
                           atsFloatDefaultCollapsed: checked,
+                          enableHomepagePricing: prev.enableHomepagePricing ?? true,
+                          enableHomepageTestimonials:
+                            prev.enableHomepageTestimonials ?? true,
+                          enableHomepageHowItWorks:
+                            prev.enableHomepageHowItWorks ?? true,
+                        };
+                        setFeatures(next);
+                      }}
+                    />
+                  </div>
+                  <div className="flex items-center justify-between p-4 border rounded-xl">
+                    <div>
+                      <p className="font-medium text-gray-900">显示首页价格方案模块</p>
+                      <p className="text-sm text-gray-500">关闭后，首页将隐藏价格卡片区域。</p>
+                    </div>
+                    <Switch
+                      checked={config.features?.enableHomepagePricing ?? true}
+                      onCheckedChange={(checked) => {
+                        const prev = (config.features ||
+                          {}) as Partial<
+                          NonNullable<import('@/contexts/site-config-base').SiteConfig['features']>
+                        >;
+                        const next: NonNullable<
+                          import('@/contexts/site-config-base').SiteConfig['features']
+                        > = {
+                          enableChatbot: prev.enableChatbot ?? true,
+                          enableAtsFloat: prev.enableAtsFloat ?? true,
+                          atsFloatDefaultCollapsed:
+                            prev.atsFloatDefaultCollapsed ?? false,
+                          enableHomepagePricing: checked,
+                          enableHomepageTestimonials:
+                            prev.enableHomepageTestimonials ?? true,
+                          enableHomepageHowItWorks:
+                            prev.enableHomepageHowItWorks ?? true,
+                        };
+                        setFeatures(next);
+                      }}
+                    />
+                  </div>
+                  <div className="flex items-center justify-between p-4 border rounded-xl">
+                    <div>
+                      <p className="font-medium text-gray-900">显示首页用户评价模块</p>
+                      <p className="text-sm text-gray-500">控制首页「3,000+ 求职者的选择」评价模块。</p>
+                    </div>
+                    <Switch
+                      checked={config.features?.enableHomepageTestimonials ?? true}
+                      onCheckedChange={(checked) => {
+                        const prev = (config.features ||
+                          {}) as Partial<
+                          NonNullable<import('@/contexts/site-config-base').SiteConfig['features']>
+                        >;
+                        const next: NonNullable<
+                          import('@/contexts/site-config-base').SiteConfig['features']
+                        > = {
+                          enableChatbot: prev.enableChatbot ?? true,
+                          enableAtsFloat: prev.enableAtsFloat ?? true,
+                          atsFloatDefaultCollapsed:
+                            prev.atsFloatDefaultCollapsed ?? false,
+                          enableHomepagePricing: prev.enableHomepagePricing ?? true,
+                          enableHomepageTestimonials: checked,
+                          enableHomepageHowItWorks:
+                            prev.enableHomepageHowItWorks ?? true,
+                        };
+                        setFeatures(next);
+                      }}
+                    />
+                  </div>
+                  <div className="flex items-center justify-between p-4 border rounded-xl">
+                    <div>
+                      <p className="font-medium text-gray-900">显示「为什么没有面试」模块</p>
+                      <p className="text-sm text-gray-500">控制首页问题拆解（Why No Interview）说明模块。</p>
+                    </div>
+                    <Switch
+                      checked={config.features?.enableHomepageHowItWorks ?? true}
+                      onCheckedChange={(checked) => {
+                        const prev = (config.features ||
+                          {}) as Partial<
+                          NonNullable<import('@/contexts/site-config-base').SiteConfig['features']>
+                        >;
+                        const next: NonNullable<
+                          import('@/contexts/site-config-base').SiteConfig['features']
+                        > = {
+                          enableChatbot: prev.enableChatbot ?? true,
+                          enableAtsFloat: prev.enableAtsFloat ?? true,
+                          atsFloatDefaultCollapsed:
+                            prev.atsFloatDefaultCollapsed ?? false,
+                          enableHomepagePricing: prev.enableHomepagePricing ?? true,
+                          enableHomepageTestimonials:
+                            prev.enableHomepageTestimonials ?? true,
+                          enableHomepageHowItWorks: checked,
                         };
                         setFeatures(next);
                       }}

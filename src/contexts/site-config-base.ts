@@ -37,6 +37,9 @@ export interface SiteConfig {
     enableChatbot: boolean
     enableAtsFloat: boolean
     atsFloatDefaultCollapsed: boolean
+    enableHomepagePricing: boolean
+    enableHomepageTestimonials: boolean
+    enableHomepageHowItWorks: boolean
   }
   analytics?: {
     gaMeasurementId?: string

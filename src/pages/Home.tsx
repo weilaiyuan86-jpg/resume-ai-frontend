@@ -277,6 +277,13 @@ function AtsQuickTestFloat({ collapsedByDefault = false }: AtsQuickTestFloatProp
 }
 
 export default function Home() {
+  const { config } = useSiteConfig();
+  const features = config.features;
+
+  const showHowItWorks = features?.enableHomepageHowItWorks ?? true;
+  const showPricing = features?.enableHomepagePricing ?? true;
+  const showTestimonials = features?.enableHomepageTestimonials ?? true;
+
   return (
     <div className="min-h-screen bg-white">
       <Navbar />
@@ -284,10 +291,10 @@ export default function Home() {
         <Hero />
         <ClientLogos />
         <Features />
-        <HowItWorks />
+        {showHowItWorks && <HowItWorks />}
         <Templates />
-        <Pricing />
-        <Testimonials />
+        {showPricing && <Pricing />}
+        {showTestimonials && <Testimonials />}
         <FAQ />
         <CTA />
       </main>

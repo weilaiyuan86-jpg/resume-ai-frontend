@@ -9,20 +9,20 @@ const steps = [
   {
     number: '01',
     icon: FileText,
-    title: '选择模板',
-    description: '从我们专业设计的ATS友好模板库中挑选，找到最适合您行业和风格的简历模板。',
+    title: '结构不可读',
+    description: '复杂排版、分栏和花哨样式会被 ATS 读成乱码，HR 也难以快速抓住重点。',
   },
   {
     number: '02',
     icon: Edit3,
-    title: '填入信息',
-    description: '我们的AI会指导您添加针对您目标职位优化的内容，实时提供改进建议。',
+    title: '匹配度太低',
+    description: '和职位 JD 中的核心关键词错位，重要经历没有对齐招聘方真正关心的点。',
   },
   {
     number: '03',
     icon: Download,
-    title: '下载申请',
-    description: '以PDF或Word格式导出您的专业简历，开始申请您梦想的工作。',
+    title: '表达不够有说服力',
+    description: '缺少数据和结果，只讲做了什么，不讲做成怎样，很难在筛选中脱颖而出。',
   },
 ];
 
@@ -120,12 +120,12 @@ export default function HowItWorks() {
         {/* Section Header */}
         <div ref={titleRef} className="text-center mb-16">
           <h2 className="text-3xl sm:text-4xl font-bold text-brand-black mb-4">
-            <span className="word inline-block">三步</span>{' '}
-            <span className="word inline-block">打造</span>{' '}
-            <span className="word inline-block text-brand-orange">完美简历</span>
+            <span className="word inline-block">为什么</span>{' '}
+            <span className="word inline-block">你的简历</span>{' '}
+            <span className="word inline-block text-brand-orange">没有面试？</span>
           </h2>
           <p className="text-lg text-brand-gray-1 max-w-2xl mx-auto">
-            简单三步，即可创建专业简历，开始您的求职之旅
+            大多数候选人输在三个看不见的细节上，我们先帮你把问题逐条查清楚。
           </p>
         </div>
 

@@ -12,14 +12,15 @@ const STORAGE_KEY = 'siteConfig'
 const defaultHomepage: HomepageConfig = {
   heroImage:
     'https://images.unsplash.com/photo-1586281380349-632531db7ed4?w=800&h=600&fit=crop',
-  heroTitle: 'AI简历评估诊断平台',
+  heroTitle: '先诊断，再优化，面试率提升 217%',
   heroSubtitle:
-    '先诊断问题，再智能优化。基于 10万+ 美国大厂录取简历训练的求职成功率预测系统，让评估更准、诊断更深、优化更狠。',
-  ctaText: '免费创建简历',
+    'AI 深度评估 28 个维度，精准定位简历问题，针对性优化提升竞争力。已帮助 3,000+ 留学生获得 Google、Amazon、Meta 等大厂面试。',
+  ctaText: '免费诊断简历（30 秒出结果）',
   features: [
-    { title: 'AI智能评估', description: '先做深度简历体检与问题诊断' },
-    { title: 'ATS检测', description: '检查是否符合主流 ATS 解析与筛选规则' },
-    { title: '智能优化', description: '基于诊断结果一键生成针对性优化方案' },
+    { title: '结构排版诊断', description: '识别双栏、表格等影响 ATS 解析的问题版式' },
+    { title: 'ATS 匹配度评估', description: '对照目标 JD 评估通过 ATS 的概率' },
+    { title: '关键词覆盖分析', description: '找出职位要求但简历中缺失的重要关键词' },
+    { title: '语言表达打磨', description: '用数据化语言突出结果与影响力' },
   ],
 }
 
@@ -91,6 +92,9 @@ const defaultConfig: SiteConfig = {
     enableChatbot: true,
     enableAtsFloat: true,
     atsFloatDefaultCollapsed: false,
+    enableHomepagePricing: true,
+    enableHomepageTestimonials: true,
+    enableHomepageHowItWorks: true,
   },
   analytics: {
     gaMeasurementId: '',

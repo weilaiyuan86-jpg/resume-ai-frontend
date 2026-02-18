@@ -44,35 +44,54 @@ interface PricingPlan {
 
 const defaultPlans: PricingPlan[] = [
   {
-    name: '基础版',
-    price: '$0',
-    period: '/月',
-    description: '适合偶尔求职',
+    name: '免费诊断',
+    price: '¥0',
+    period: '/次',
+    description: '适合想先大致了解问题的求职者',
     icon: 'sparkles',
-    features: ['3份简历', '基础模板', 'PDF下载', '邮件支持'],
+    features: [
+      '基础综合评分',
+      'Top 3 关键问题提示',
+      '预估简历通过率',
+      '简版诊断报告',
+      '改简历方向建议（部分解锁）',
+    ],
     cta: '免费开始',
     href: '/register',
     popular: false,
   },
   {
     name: '专业版',
-    price: '$12',
-    period: '/月',
-    description: '适合积极求职者',
+    price: '¥49',
+    period: '/次',
+    description: '适合正在积极投递的求职者',
     icon: 'zap',
-    features: ['无限简历', '所有模板', 'AI内容建议', 'ATS优化', '优先支持'],
-    cta: '立即升级',
+    features: [
+      '完整 28 项诊断指标报告',
+      'AI 定制改写建议',
+      '行业与同岗位对标数据',
+      'ATS 模拟检测与通过率评估',
+      '竞争力评分与排名',
+      '优先客服支持',
+    ],
+    cta: '开始专业诊断',
     href: '/register?plan=pro',
     popular: true,
   },
   {
-    name: '企业版',
-    price: '$29',
-    period: '/月',
-    description: '适合职业专业人士',
+    name: '求职护航',
+    price: '¥199',
+    period: '/次',
+    description: '适合转行者或准备冲击更高职位的求职者',
     icon: 'building',
-    features: ['专业版所有功能', '自定义品牌', '团队协作', 'API访问', '专属客户经理'],
-    cta: '联系销售',
+    features: [
+      '包含专业版全部功能',
+      '1v1 简历与求职咨询（2 次/月）',
+      '内推与资源对接建议',
+      '面试思路梳理与答题框架',
+      '求职路径与投递策略建议',
+    ],
+    cta: '预约求职护航',
     href: '/contact',
     popular: false,
   },
@@ -176,12 +195,12 @@ export default function Pricing() {
         {/* Section Header */}
         <div ref={titleRef} className="text-center mb-16">
           <h2 className="text-3xl sm:text-4xl font-bold text-brand-black mb-4">
-            <span className="word inline-block">简单</span>{' '}
-            <span className="word inline-block text-brand-orange">透明</span>{' '}
-            <span className="word inline-block">的定价</span>
+            <span className="word inline-block">选择</span>{' '}
+            <span className="word inline-block text-brand-orange">适合你</span>{' '}
+            <span className="word inline-block">的诊断方案</span>
           </h2>
           <p className="text-lg text-brand-gray-1 max-w-2xl mx-auto">
-            选择最适合您需求的方案，随时升级或降级
+            从免费体验到深度诊断，按需求选择一次性方案，无任何自动续费。
           </p>
         </div>
 
